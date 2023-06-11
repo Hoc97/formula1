@@ -1,11 +1,14 @@
-import env from '@/configs/env';
+import useRaces from '@/modules/useRaces';
+
 const Result = () => {
-    return (
-        <>
-            {env.baseUrl}
-            <div>Result page</div>
-        </>
-    );
+  const { data, isLoading } = useRaces({ season: '2022', competition: '23', type: 'race' });
+
+  return (
+    <>
+      {isLoading && <>Loading</>}
+      {!isLoading && <>{JSON.stringify(data)}</>}
+    </>
+  );
 };
 
 export default Result;
