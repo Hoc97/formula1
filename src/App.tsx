@@ -1,12 +1,13 @@
-import './App.css';
-import Result from './pages/Result';
+import { QueryClientProvider } from 'react-query';
+import queryClient from '@/services/queryClient';
+import Result from '@/pages/Result';
 
 function App() {
-    return (
-        <>
-            <Result />
-        </>
-    );
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Result />
+    </QueryClientProvider>
+  );
 }
 
 export default App;
