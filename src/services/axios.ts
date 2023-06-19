@@ -2,11 +2,7 @@ import axios from 'axios';
 import env from '@/configs/env';
 
 const instance = axios.create({
-  baseURL: env.baseUrl,
-  headers: {
-    'x-rapidapi-host': env.host,
-    'x-rapidapi-key': env.key
-  }
+  baseURL: env.baseUrl
 });
 
 instance.interceptors.request.use(
