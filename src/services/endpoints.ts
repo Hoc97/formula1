@@ -1,7 +1,8 @@
 export default {
   races: 'races',
-  team: 'teams',
-  drivers: 'drivers',
+  rankingRaces: 'rankings/races',
+  teams: 'rankings/teams',
+  drivers: 'rankings/drivers',
   circuits: 'circuits',
   competitions: 'competitions',
   seasons: 'seasons'

@@ -16,7 +16,7 @@ const LayoutPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
   return (
-    <Layout className="layout">
+    <Layout className='layout'>
       <HeaderPage />
       <Content style={{ padding: '0 50px' }}>
         <Breadcrumb
@@ -26,14 +26,14 @@ const LayoutPage = () => {
               title: 'Home'
             },
             {
-              title: <Link to="/">List</Link>
+              title: <Link to='/'>List</Link>
             },
             {
-              title: <Link to="/">App</Link>
+              title: <Link to='/'>App</Link>
             }
           ]}
         />
-        <div className="site-layout-content">
+        <div className='site-layout-content'>
           <Outlet />
         </div>
       </Content>

@@ -20,7 +20,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   function (response) {
-    return response;
+    return response?.data?.response ? response.data.response : response;
   },
   async function (error) {
     return error?.response ?? Promise.reject(error);

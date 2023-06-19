@@ -1,7 +1,8 @@
+import '@/pages/RaceDetail/RaceDetail.scss';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -21,53 +22,104 @@ function getItem(
   } as MenuItem;
 }
 
-const items: MenuProps['items'] = [
-  getItem(
-    'RACE',
-    'race',
-    null,
-    [
-      getItem('RACE RESULT', 'race-result'),
-      getItem('FASTEST LAPS', 'fastest-laps'),
-      getItem('PIT STOP SUMMARY', 'pit-stop-summary'),
-      getItem('STARTING GRID', 'starting-grid'),
-      getItem('QUALIFYING', 'qualifying'),
-      getItem('PRACTICE 3', 'practice-3'),
-      getItem('PRACTICE 2', 'practice-2'),
-      getItem('PRACTICE 1', 'practice-1')
-    ],
-    'group'
-  )
-];
-
 const RaceDetail = () => {
-  const nav = useNavigate();
-  useEffect(() => {
-    nav(`race-result`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const param = useParams();
+  const data = [
+    {
+      label: 'RACE RESULT',
+      key: 'race-result'
+    },
+    {
+      label: 'FASTEST LAPS',
+      key: 'fastest-laps'
+    },
+    {
+      label: 'PIT STOP SUMMARY',
+      key: 'pit-stop-summary'
+    },
+    {
+      label: 'STARTING GRID',
+      key: 'starting-grid'
+    },
+    {
+      label: 'QUALIFYING',
+      key: 'qualifying'
+    },
+    {
+      label: 'PRACTICE 3',
+      key: 'practice-3'
+    },
+    {
+      label: 'PRACTICE 2',
+      key: 'practice-2'
+    },
+    {
+      label: 'PRACTICE 1',
+      key: 'practice-1'
+    }
+  ];
 
+  const dataMenu = data.map((item) => {
+    return getItem(item.label, item.key);
+  });
+
+  const items: MenuProps['items'] = [
+    getItem(<b style={{ color: 'black' }}>RACE</b>, 'race', null, dataMenu, 'group')
+  ];
+
+  const nav = useNavigate();
+  const { pathname } = useLocation();
+  const { season, raceDetail } = useParams();
+  const [goBack, setGoBack] = useState(false);
+  const [current, setCurrent] = useState('race-result');
+
+  useEffect(() => {
+    if (pathname.includes(`/${raceDetail}/`)) {
+      setCurrent(pathname?.split('/')[5]);
+    }
+    if (!goBack && pathname === `/results/${season}/races/${raceDetail}`) {
+      nav(`race-result`);
+      return;
+    }
+    if (goBack && pathname === `/results/${season}/races/${raceDetail}`) {
+      nav(`/results/${season}/races`);
+      return;
+    }
+    if (pathname === `/results/${season}/races/${raceDetail}/race-result`) {
+      setGoBack(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
   const handleActiveRace: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
+    // console.log('click ', e);
     nav(`${e.key}`);
   };
 
   return (
-    <>
-      <span>FORMULA 1 GULF AIR BAHRAIN GRAND PRIX 2023 - RACE RESULT</span>
+    <div className='races-detail-container'>
+      <div className='header'>
+        <h1>
+          FORMULA 1 {param.raceDetail?.toUpperCase()} GRAND PRIX {param.season}{' '}
+        </h1>
+        <h1>- {data[data.findIndex((item) => item.key === current)].label}</h1>
+        <p className='date'>
+          <span>05 Mar 2023</span>
+          <span>Bahrain International Circuit</span>
+        </p>
+      </div>
       <div style={{ display: 'flex' }}>
         <Menu
           onClick={handleActiveRace}
           style={{ width: 256 }}
-          defaultSelectedKeys={['1']}
-          mode="inline"
+          selectedKeys={[current]}
+          mode='inline'
           items={items}
         />
-        <div style={{ flex: 1 }}>
+        <div className='races-detail-content' style={{ flex: 1, marginLeft: 20 }}>
           <Outlet />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
