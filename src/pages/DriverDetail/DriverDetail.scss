@@ -1,0 +1,23 @@
+.drivers-detail-content {
+  margin: 35px 15px 10px;
+
+  h1 {
+    font-weight: 500;
+    font-size: 42px;
+    margin-bottom: 48px;
+  }
+
+  table {
+    td {
+      &.grand_prix,
+      &.car span {
+        font-weight: 600;
+
+        &:hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

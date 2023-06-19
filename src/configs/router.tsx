@@ -1,23 +1,23 @@
-import Dashboard from '@/pages/Dashboard/Dashboard';
-import FastestLaps from '@/pages/FastestLaps/FastestLaps';
 import LayoutPage from '@/layouts/LayoutPage/LayoutPage';
-import NotFound from '@/pages/NotFound/NotFound';
-import RaceResult from '@/pages/RaceResult/RaceResult';
-import Result from '@/pages/Result/Result';
-import { Navigate, createBrowserRouter } from 'react-router-dom';
-import PitStopSummary from '@/pages/PitStopSummary/PitStopSummary';
-import StartingGrid from '@/pages/StartingGrid/StartingGrid';
-import Qualifying from '@/pages/Qualifying/Qualifying';
-import Practice_3 from '@/pages/Practice_3/Practice_3';
-import Practice_2 from '@/pages/Practice_2/Practice_2';
-import Practice_1 from '@/pages/Practice_1/Practice_1';
-import Races from '@/pages/Races/Races';
-import RaceDetail from '@/pages/RaceDetail/RaceDetail';
-import Drivers from '@/pages/Drivers/Drivers';
+import Dashboard from '@/pages/Dashboard/Dashboard';
 import DriverDetail from '@/pages/DriverDetail/DriverDetail';
+import Drivers from '@/pages/Drivers/Drivers';
+import FastestLaps from '@/pages/FastestLaps/FastestLaps';
+import FastestLapsAward from '@/pages/FastestLapsAward/FastestLapsAward';
+import NotFound from '@/pages/NotFound/NotFound';
+import PitStopSummary from '@/pages/PitStopSummary/PitStopSummary';
+import Practice_1 from '@/pages/Practice_1/Practice_1';
+import Practice_2 from '@/pages/Practice_2/Practice_2';
+import Practice_3 from '@/pages/Practice_3/Practice_3';
+import Qualifying from '@/pages/Qualifying/Qualifying';
+import RaceDetail from '@/pages/RaceDetail/RaceDetail';
+import RaceResult from '@/pages/RaceResult/RaceResult';
+import Races from '@/pages/Races/Races';
+import Result from '@/pages/Result/Result';
+import StartingGrid from '@/pages/StartingGrid/StartingGrid';
 import TeamDetail from '@/pages/TeamDetail/TeamDetail';
 import Teams from '@/pages/Teams/Teams';
-import FastestLapsAward from '@/pages/FastestLapsAward/FastestLapsAward';
+import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
   {
@@ -28,10 +28,6 @@ export const router = createBrowserRouter([
         path: 'results/:season',
         element: <Result />,
         children: [
-          {
-            index: true,
-            element: <Navigate replace to="races" />
-          },
           {
             path: 'races',
             element: <Races />,
