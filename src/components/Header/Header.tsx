@@ -13,8 +13,12 @@ const items: MenuProps['items'] = [
     key: 'results'
   },
   {
-    label: <Link to='/dashboard'>Dashboard</Link>,
-    key: 'dashboard'
+    label: <Link to='/drivers'>Drivers</Link>,
+    key: 'drivers'
+  },
+  {
+    label: <Link to='/teams'>Teams</Link>,
+    key: 'teams'
   }
 ];
 const HeaderPage = () => {
@@ -22,12 +26,16 @@ const HeaderPage = () => {
   const [current, setCurrent] = useState('results');
 
   useEffect(() => {
-    if (pathname.includes('/results/') || pathname === '/') {
+    if (pathname.includes('/results/')) {
       setCurrent('results');
       return;
     }
-    if (pathname === '/dashboard') {
-      setCurrent('dashboard');
+    if (pathname === '/drivers') {
+      setCurrent('drivers');
+      return;
+    }
+    if (pathname === '/teams') {
+      setCurrent('teams');
       return;
     }
     setCurrent('');
@@ -51,13 +59,7 @@ const HeaderPage = () => {
           <img src={logo} alt='test' />
         </Link>
       </div>
-      <Menu
-        theme='dark'
-        onClick={handleChange}
-        mode='horizontal'
-        selectedKeys={[current]}
-        items={items}
-      />
+      <Menu theme='dark' onClick={handleChange} mode='horizontal' selectedKeys={[current]} items={items} />
     </Header>
   );
 };

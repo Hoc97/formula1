@@ -63,9 +63,7 @@ const RaceDetail = () => {
     return getItem(item.label, item.key);
   });
 
-  const items: MenuProps['items'] = [
-    getItem(<b style={{ color: 'black' }}>RACE</b>, 'race', null, dataMenu, 'group')
-  ];
+  const items: MenuProps['items'] = [getItem(<b style={{ color: 'black' }}>RACE</b>, 'race', null, dataMenu, 'group')];
 
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -108,13 +106,7 @@ const RaceDetail = () => {
         </p>
       </div>
       <div style={{ display: 'flex' }}>
-        <Menu
-          onClick={handleActiveRace}
-          style={{ width: 256 }}
-          selectedKeys={[current]}
-          mode='inline'
-          items={items}
-        />
+        <Menu onClick={handleActiveRace} style={{ width: 256 }} selectedKeys={[current]} mode='inline' items={items} />
         <div className='races-detail-content' style={{ flex: 1, marginLeft: 20 }}>
           <Outlet />
         </div>

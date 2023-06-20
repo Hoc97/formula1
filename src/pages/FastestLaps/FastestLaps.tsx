@@ -1,4 +1,3 @@
-import '@/pages/Races/Races.scss';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 

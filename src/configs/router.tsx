@@ -1,7 +1,7 @@
 import LayoutPage from '@/layouts/LayoutPage/LayoutPage';
-import Dashboard from '@/pages/Dashboard/Dashboard';
-import DriverDetail from '@/pages/DriverDetail/DriverDetail';
 import Drivers from '@/pages/Drivers/Drivers';
+import DriverDetail from '@/pages/DriverDetail/DriverDetail';
+import DriverStandings from '@/pages/DriverStandings/DriverStandings';
 import FastestLaps from '@/pages/FastestLaps/FastestLaps';
 import FastestLapsAward from '@/pages/FastestLapsAward/FastestLapsAward';
 import NotFound from '@/pages/NotFound/NotFound';
@@ -12,12 +12,14 @@ import Practice_3 from '@/pages/Practice_3/Practice_3';
 import Qualifying from '@/pages/Qualifying/Qualifying';
 import RaceDetail from '@/pages/RaceDetail/RaceDetail';
 import RaceResult from '@/pages/RaceResult/RaceResult';
-import Races from '@/pages/Races/Races';
+import AllRaces from '@/pages/AllRaces/AllRaces';
 import Result from '@/pages/Result/Result';
 import StartingGrid from '@/pages/StartingGrid/StartingGrid';
 import TeamDetail from '@/pages/TeamDetail/TeamDetail';
-import Teams from '@/pages/Teams/Teams';
+import TeamStandings from '@/pages/TeamStandings/TeamStandings';
 import { createBrowserRouter } from 'react-router-dom';
+import Teams from '@/pages/Teams/Teams';
+import Home from '@/pages/Home/Home';
 
 export const router = createBrowserRouter([
   {
@@ -25,12 +27,16 @@ export const router = createBrowserRouter([
     element: <LayoutPage />,
     children: [
       {
+        index: true,
+        element: <Home />
+      },
+      {
         path: 'results/:season',
         element: <Result />,
         children: [
           {
             path: 'races',
-            element: <Races />,
+            element: <AllRaces />,
             children: [
               {
                 path: ':raceDetail',
@@ -74,7 +80,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'drivers',
-            element: <Drivers />,
+            element: <DriverStandings />,
             children: [
               {
                 path: ':driverDetail',
@@ -84,7 +90,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'teams',
-            element: <Teams />,
+            element: <TeamStandings />,
             children: [
               {
                 path: ':teamDetail',
@@ -99,8 +105,12 @@ export const router = createBrowserRouter([
         ]
       },
       {
-        path: 'dashboard',
-        element: <Dashboard />
+        path: 'drivers',
+        element: <Drivers />
+      },
+      {
+        path: 'teams',
+        element: <Teams />
       },
       {
         path: '*',

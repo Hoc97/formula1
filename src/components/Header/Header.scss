@@ -1,6 +1,4 @@
 .layout-header-page {
-  margin-top: 40px;
-  background: #e10600;
   display: flex;
   align-items: center;
 
@@ -18,26 +16,5 @@
         object-fit: contain;
       }
     }
-  }
-
-  :where(.css-dev-only-do-not-override-12jzuas).ant-menu-dark.ant-menu-horizontal
-    > .ant-menu-item-selected {
-    color: #fff;
-    background: #e10600;
-    // background: #15151e;
-    font-weight: 600;
-
-    &.ant-menu-item a::before {
-      border-bottom: 2px solid #fff;
-    }
-  }
-
-  :where(.css-dev-only-do-not-override-12jzuas).ant-menu-dark {
-    display: flex;
-    align-items: center;
-    width: calc(100% - 64px);
-    height: 100%;
-    color: #fff;
-    background: #e10600;
   }
 }

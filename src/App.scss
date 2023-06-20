@@ -28,11 +28,58 @@ html *::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
 
-// table ant
+// Table ant
 table {
   td {
     &.highlight {
       font-weight: 600;
     }
   }
+}
+
+// Menu ant
+.ant-layout-header {
+  background: #e10600;
+  height: 67px;
+}
+
+.ant-menu-item a {
+  font-size: 20px;
+
+  &:hover::before {
+    border-top: 2px solid #fff;
+  }
+}
+
+.ant-menu-dark.ant-menu-horizontal > .ant-menu-item {
+  margin-right: 20px;
+}
+
+.ant-menu-dark.ant-menu-horizontal > .ant-menu-item-selected {
+  color: #fff;
+  background: #e10600;
+  font-weight: 600;
+
+  &.ant-menu-item a {
+    border-bottom-right-radius: 10px;
+    border-bottom: 1px solid #fff;
+    border-right: 1px solid #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+    padding-bottom: 5px;
+    padding-right: 5px;
+    padding-left: 2px;
+
+    &::before {
+      border-top: 2px solid #fff;
+    }
+  }
+}
+
+.ant-menu-dark {
+  display: flex;
+  align-items: center;
+  width: calc(100% - 64px);
+  height: 67px;
+  color: #fff;
+  background: #e10600;
 }

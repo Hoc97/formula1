@@ -1,6 +1,6 @@
 import useRaces from '@/modules/useRaces';
 import useRankingRaces from '@/modules/useRankingRaces';
-import '@/pages/Races/Races.scss';
+import '@/pages/AllRaces/AllRaces.scss';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
@@ -17,7 +17,7 @@ interface DataType {
   time: string;
 }
 
-const Races = () => {
+const AllRaces = () => {
   const params = useParams();
   const nav = useNavigate();
   const columns: ColumnsType<DataType> = [
@@ -124,4 +124,4 @@ const Races = () => {
   );
 };
 
-export default Races;
+export default AllRaces;
