@@ -1,25 +1,29 @@
-import LayoutPage from '@/layouts/LayoutPage/LayoutPage';
-import Drivers from '@/pages/Drivers/Drivers';
-import DriverDetail from '@/pages/DriverDetail/DriverDetail';
-import DriverStandings from '@/pages/DriverStandings/DriverStandings';
-import FastestLaps from '@/pages/FastestLaps/FastestLaps';
-import FastestLapsAward from '@/pages/FastestLapsAward/FastestLapsAward';
-import NotFound from '@/pages/NotFound/NotFound';
-import PitStopSummary from '@/pages/PitStopSummary/PitStopSummary';
-import Practice_1 from '@/pages/Practice_1/Practice_1';
-import Practice_2 from '@/pages/Practice_2/Practice_2';
-import Practice_3 from '@/pages/Practice_3/Practice_3';
-import Qualifying from '@/pages/Qualifying/Qualifying';
-import RaceDetail from '@/pages/RaceDetail/RaceDetail';
-import RaceResult from '@/pages/RaceResult/RaceResult';
-import AllRaces from '@/pages/AllRaces/AllRaces';
-import Result from '@/pages/Result/Result';
-import StartingGrid from '@/pages/StartingGrid/StartingGrid';
-import TeamDetail from '@/pages/TeamDetail/TeamDetail';
-import TeamStandings from '@/pages/TeamStandings/TeamStandings';
+/* eslint-disable react-refresh/only-export-components */
+import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import Teams from '@/pages/Teams/Teams';
-import Home from '@/pages/Home/Home';
+
+const LayoutPage = lazy(() => import('../layouts/LayoutPage/LayoutPage'));
+const Drivers = lazy(() => import('@/pages/Drivers/Drivers'));
+const DriverDetail = lazy(() => import('@/pages/DriverDetail/DriverDetail'));
+const DriverStandings = lazy(() => import('@/pages/DriverStandings/DriverStandings'));
+const FastestLaps = lazy(() => import('@/pages/FastestLaps/FastestLaps'));
+const FastestLapsAward = lazy(() => import('@/pages/FastestLapsAward/FastestLapsAward'));
+const NotFound = lazy(() => import('@/pages/NotFound/NotFound'));
+const PitStopSummary = lazy(() => import('@/pages/PitStopSummary/PitStopSummary'));
+const Practice_1 = lazy(() => import('@/pages/Practice_1/Practice_1'));
+const Practice_2 = lazy(() => import('@/pages/Practice_2/Practice_2'));
+const Practice_3 = lazy(() => import('@/pages/Practice_3/Practice_3'));
+const Qualifying = lazy(() => import('@/pages/Qualifying/Qualifying'));
+const RaceDetail = lazy(() => import('@/pages/RaceDetail/RaceDetail'));
+const RaceResult = lazy(() => import('@/pages/RaceResult/RaceResult'));
+const SeasonRaceResults = lazy(() => import('@/pages/SeasonRaceResults/SeasonRaceResults'));
+const Schedule = lazy(() => import('@/pages/Schedule/Schedule'));
+const Result = lazy(() => import('@/pages/Result/Result'));
+const StartingGrid = lazy(() => import('@/pages/StartingGrid/StartingGrid'));
+const TeamDetail = lazy(() => import('@/pages/TeamDetail/TeamDetail'));
+const TeamStandings = lazy(() => import('@/pages/TeamStandings/TeamStandings'));
+const Teams = lazy(() => import('@/pages/Teams/Teams'));
+const Home = lazy(() => import('@/pages/Home/Home'));
 
 export const router = createBrowserRouter([
   {
@@ -31,12 +35,16 @@ export const router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: 'racing',
+        element: <Schedule />
+      },
+      {
         path: 'results/:season',
         element: <Result />,
         children: [
           {
             path: 'races',
-            element: <AllRaces />,
+            element: <SeasonRaceResults />,
             children: [
               {
                 path: ':raceDetail',

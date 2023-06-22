@@ -1,0 +1,36 @@
+.schedule-container {
+  .schedule-content {
+    margin: 15px 15px 10px;
+    h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .schedule-table {
+      display: flex;
+      justify-content: center;
+      table {
+        td {
+          .result {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 30px;
+            cursor: pointer;
+          }
+
+          .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            height: 25px;
+            min-width: 100px;
+          }
+        }
+      }
+    }
+  }
+}

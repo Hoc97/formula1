@@ -5,6 +5,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       useErrorBoundary: true
+      // suspense: true
     }
   }
 });

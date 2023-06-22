@@ -9,6 +9,10 @@ import { Link, useLocation } from 'react-router-dom';
 const { Header } = Layout;
 const items: MenuProps['items'] = [
   {
+    label: <Link to='/racing'>Schedule</Link>,
+    key: 'racing'
+  },
+  {
     label: <Link to='/results/2023/races'>Results</Link>,
     key: 'results'
   },
@@ -23,22 +27,31 @@ const items: MenuProps['items'] = [
 ];
 const HeaderPage = () => {
   const { pathname } = useLocation();
-  const [current, setCurrent] = useState('results');
+  const [current, setCurrent] = useState('');
 
   useEffect(() => {
+    if (pathname === '/racing') {
+      setCurrent('racing');
+      document.title = 'F1 Schedule';
+      return;
+    }
     if (pathname.includes('/results/')) {
       setCurrent('results');
+      document.title = 'F1 Results';
       return;
     }
     if (pathname === '/drivers') {
       setCurrent('drivers');
+      document.title = 'F1 Drivers';
       return;
     }
     if (pathname === '/teams') {
       setCurrent('teams');
+      document.title = 'F1 Teams';
       return;
     }
     setCurrent('');
+    document.title = 'F1 - Home';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 

@@ -1,25 +1,41 @@
-export type RacesQueryOptions = {
-  competition?: number;
-  type?: string;
-  season: number;
+type RacesQueryOptions = {
+  RaceTable: {
+    season: string;
+    Races: any[];
+  };
+  limit: string;
+  offet: string;
+  series: string;
+  total: string;
+  url: string;
+  xmlns: string;
 };
 
-export type RankingRacesQueryOptions = number[];
+type RaceResultsQueryOptions = RacesQueryOptions;
 
-export type DriversQueryOptions = {
+type RacesKeyType = [string, RacesQueryOptions | undefined];
+
+type RankingRacesQueryOptions = number[];
+
+type DriversQueryOptions = {
   team?: number;
   driver?: number;
   season: number;
 };
 
-export type TeamsQueryOptions = {
+type TeamsQueryOptions = {
   team?: number;
   season: number;
 };
 
-export interface ssdas {
-  season: number;
-}
+export type {
+  RacesQueryOptions,
+  RacesKeyType,
+  RankingRacesQueryOptions,
+  DriversQueryOptions,
+  TeamsQueryOptions,
+  RaceResultsQueryOptions
+};
 
 // export type RaceQueryData = {
 //   id: object;
