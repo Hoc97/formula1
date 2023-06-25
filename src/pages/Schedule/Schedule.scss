@@ -19,6 +19,12 @@
             width: 100px;
             height: 30px;
             cursor: pointer;
+
+            &:hover {
+              box-shadow: 0 0 0 2px #e10600;
+              background: 0 0;
+              color: #38383f;
+            }
           }
 
           .status {

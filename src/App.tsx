@@ -6,14 +6,17 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Suspense } from 'react';
 import '@/App.scss';
 import LoadingPage from '@/pages/LoadingPage/LoadingPage';
+import { AppProvider } from './context/AppContext';
 
 function App() {
   return (
     <Suspense fallback={<LoadingPage />}>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <AppProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </AppProvider>
     </Suspense>
   );
 }

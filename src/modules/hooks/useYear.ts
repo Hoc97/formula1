@@ -1,8 +1,12 @@
-import { useQueryGlobalState } from '..';
+import AppContext from '@/context/AppContext';
+import { useContext } from 'react';
 
-const useYear = () => {
-  const thisYear = new Date().getFullYear();
-  const [year, setYear] = useQueryGlobalState('year', thisYear);
+const useYear = (): [number, (year: number) => void] => {
+  const {
+    valueForm: { season },
+    setYear
+  } = useContext(AppContext);
+  const year = season;
   return [year, setYear];
 };
 

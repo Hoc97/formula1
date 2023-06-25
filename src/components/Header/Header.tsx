@@ -1,68 +1,68 @@
 import logo from '@/assets/f1_logo.svg';
 import '@/components/Header/Header.scss';
-import queryClient from '@/services/queryClient';
+import { useValueForm, useYear } from '@/modules';
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const { Header } = Layout;
-const items: MenuProps['items'] = [
-  {
-    label: <Link to='/racing'>Schedule</Link>,
-    key: 'racing'
-  },
-  {
-    label: <Link to='/results/2023/races'>Results</Link>,
-    key: 'results'
-  },
-  {
-    label: <Link to='/drivers'>Drivers</Link>,
-    key: 'drivers'
-  },
-  {
-    label: <Link to='/teams'>Teams</Link>,
-    key: 'teams'
-  }
-];
+
 const HeaderPage = () => {
   const { pathname } = useLocation();
   const [current, setCurrent] = useState('');
+  const [year] = useYear();
+  const { setValueForm } = useValueForm();
 
   useEffect(() => {
     if (pathname === '/racing') {
       setCurrent('racing');
-      document.title = 'F1 Schedule';
+      document.title = `F1 Schedule ${year}`;
       return;
     }
     if (pathname.includes('/results/')) {
       setCurrent('results');
-      document.title = 'F1 Results';
+      document.title = `F1 Results ${year}`;
       return;
     }
     if (pathname === '/drivers') {
       setCurrent('drivers');
-      document.title = 'F1 Drivers';
+      document.title = `F1 Drivers ${year}`;
       return;
     }
     if (pathname === '/teams') {
       setCurrent('teams');
-      document.title = 'F1 Teams';
+      document.title = `F1 Teams ${year}`;
       return;
     }
     setCurrent('');
     document.title = 'F1 - Home';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, year]);
+
+  const items: MenuProps['items'] = [
+    {
+      label: <Link to='/racing'>Schedule</Link>,
+      key: 'racing'
+    },
+    {
+      label: <Link to={`/results/${year}/races`}>Results</Link>,
+      key: 'results'
+    },
+    {
+      label: <Link to='/drivers'>Drivers</Link>,
+      key: 'drivers'
+    },
+    {
+      label: <Link to='/teams'>Teams</Link>,
+      key: 'teams'
+    }
+  ];
 
   const handleChange: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
     if (e.key === 'results') {
-      queryClient.setQueryData(['initialValueForm'], () => ({
-        season: 2023,
-        type: 'races',
-        responseKey: 'all'
-      }));
+      setValueForm(year, 'races', 'all');
     }
   };
   return (
