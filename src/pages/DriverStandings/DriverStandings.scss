@@ -11,11 +11,11 @@
     table {
       td {
         &.driver,
-        &.car span {
+        &.team span {
           font-weight: 600;
+          text-decoration: underline;
 
           &:hover {
-            text-decoration: underline;
             cursor: pointer;
           }
         }

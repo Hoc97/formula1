@@ -1,4 +1,4 @@
-import { queryName } from '@/modules/queryName';
+import { queryName } from '../queryName';
 import { getRankingRaces } from '@/services/api';
 import { RankingRacesQueryOptions } from '@/types/type';
 import { useQueries } from '@tanstack/react-query';

@@ -1,4 +1,4 @@
-import { useQualifying, useYear } from '@/modules';
+import { useSprint, useYear } from '@/modules';
 import { Spin, Table, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMemo } from 'react';
@@ -10,9 +10,9 @@ interface DataType {
   no: string;
   driver: string;
   team: string;
-  q1: string;
-  q2: string;
-  q3: string;
+  laps: string;
+  time: string;
+  point: string;
 }
 
 const columns: ColumnsType<DataType> = [
@@ -29,66 +29,69 @@ const columns: ColumnsType<DataType> = [
     dataIndex: 'driver',
     className: 'highlight'
   },
+
   {
     title: 'TEAM',
     dataIndex: 'team',
     className: 'highlight'
   },
   {
-    title: 'Q1',
-    dataIndex: 'q1',
+    title: 'LAPS',
+    dataIndex: 'laps',
     className: 'highlight'
   },
   {
-    title: 'Q2',
-    dataIndex: 'q2',
+    title: 'TIME',
+    dataIndex: 'time',
     className: 'highlight'
   },
+
   {
-    title: 'Q3',
-    dataIndex: 'q3',
+    title: 'PTS',
+    dataIndex: 'point',
     className: 'highlight'
   }
 ];
 
-const Qualifying = () => {
+const Sprint = () => {
   const { round } = useOutletContext<{ round: string | number }>();
-
   const [year] = useYear();
-  const qualifyingQuery = useQualifying(year, round as string, { enabled: !!round });
+  const sprintQuery = useSprint(year, round as string, { enabled: !!round });
 
   const data: DataType[] = useMemo(() => {
-    const dataQualifying = (qualifyingQuery.data?.RaceTable?.Races[0]?.QualifyingResults as any[]) ?? [];
+    const dataSprint = (sprintQuery.data?.RaceTable?.Races[0]?.SprintResults as any[]) ?? [];
     return (
-      dataQualifying.map((item) => {
+      dataSprint.map((item) => {
         return {
           key: item.position,
           pos: item.position,
           no: item.number,
           driver: `${item.Driver.givenName} ${item.Driver.familyName}`,
           team: item.Constructor.name.toUpperCase(),
-          q1: item?.Q1,
-          q2: item?.Q2,
-          q3: item?.Q3
+          laps: item.laps,
+          time:
+            item.status === 'Finished' || item.status.includes('Lap')
+              ? item.Time?.time
+                ? item.Time.time
+                : 'No Time'
+              : 'DNF',
+          point: item.points
         };
       }) ?? []
     );
-  }, [qualifyingQuery.data]);
+  }, [sprintQuery.data]);
+
   return (
     <>
       {data.length > 0 ? (
-        <Table loading={qualifyingQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+        <Table loading={sprintQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
       ) : (
         <Typography.Title level={3}>
-          {!qualifyingQuery.isFetching ? (
-            <>Qualifying results are only fully supported from the 2003 season onwards.</>
-          ) : (
-            <Spin />
-          )}
+          {!sprintQuery.isFetching ? <>No sprint qualifying results for this round</> : <Spin />}
         </Typography.Title>
       )}
     </>
   );
 };
 
-export default Qualifying;
+export default Sprint;

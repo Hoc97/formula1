@@ -1,6 +1,5 @@
 .schedule-container {
   .schedule-content {
-    margin: 15px 15px 10px;
     h1 {
       font-size: 42px;
       margin-bottom: 20px;
@@ -31,9 +30,43 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 10;
             gap: 5px;
             height: 25px;
             min-width: 100px;
+
+            &#next-race {
+              position: relative;
+              overflow: hidden;
+              border: none;
+
+              &::before {
+                content: '';
+                position: absolute;
+                z-index: -1;
+                width: 200%;
+                height: 1000%;
+                // background: linear-gradient(#00ccff, #d400d4);
+                background: conic-gradient(red, #d400d4, yellow, green, #00ccff);
+                animation: animate 5s linear infinite forwards;
+              }
+
+              &::after {
+                content: '';
+                position: absolute;
+                z-index: -1;
+                inset: 3px;
+                background: #0e1538;
+                border-radius: 2px;
+              }
+
+              @keyframes animate {
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+            }
           }
         }
       }

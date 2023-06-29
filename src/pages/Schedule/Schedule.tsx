@@ -30,8 +30,6 @@ interface ExpandedDataType {
 }
 
 const Schedule = () => {
-  const [year] = useYear();
-
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
   const [latest, setLastest] = useState(-1);
   const nav = useNavigate();
@@ -53,11 +51,13 @@ const Schedule = () => {
     });
   };
 
+  const [year] = useYear();
   const racesQuery = useRaces(year);
+
   const dataRaces = useMemo(() => {
     // use lodash to clone object racesQuery => avoid get dataRaces[i].passed = true when select season other
     const racesQueryClone = _.cloneDeep(racesQuery);
-    const dataRaces = (racesQueryClone.data?.RaceTable.Races as any[]) ?? [];
+    const dataRaces = (racesQueryClone.data?.RaceTable?.Races as any[]) ?? [];
     const thisYear = new Date().getFullYear();
     if (year === thisYear) {
       for (let i = 0; i < dataRaces.length; i++) {
@@ -70,7 +70,7 @@ const Schedule = () => {
       }
     } else if (year < thisYear) {
       for (let i = 0; i < dataRaces.length; i++) {
-        setLastest(-1);
+        if (latest !== -1) setLastest(-1);
         dataRaces[i].passed = true;
       }
     }
@@ -78,7 +78,7 @@ const Schedule = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [racesQuery.data]);
 
-  const data: DataType[] | undefined = useMemo(() => {
+  const data: DataType[] = useMemo(() => {
     return (
       dataRaces?.map((item) => {
         let status = 'SCHEDULE';
@@ -127,10 +127,7 @@ const Schedule = () => {
         return (
           <>
             {text && (
-              <Tag
-                className='result'
-                key={text}
-                onClick={() => nav(`/results/${year}/races/${name}/race-result`, { state: { name: text } })}>
+              <Tag className='result' key={text} onClick={() => nav(`/results/${year}/races/${name}/race-result`)}>
                 {text}
                 <MdNavigateNext style={{ color: 'red' }} size='20px' />
               </Tag>

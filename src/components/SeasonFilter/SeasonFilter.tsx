@@ -6,7 +6,6 @@ const { Option } = Select;
 const SeasonFilter = () => {
   const [form] = Form.useForm();
   const [year, setYear] = useYear();
-  console.log('year', year);
 
   useEffect(() => {
     form.setFieldsValue({

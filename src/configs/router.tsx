@@ -10,16 +10,13 @@ const FastestLaps = lazy(() => import('@/pages/FastestLaps/FastestLaps'));
 const FastestLapsAward = lazy(() => import('@/pages/FastestLapsAward/FastestLapsAward'));
 const NotFound = lazy(() => import('@/pages/NotFound/NotFound'));
 const PitStopSummary = lazy(() => import('@/pages/PitStopSummary/PitStopSummary'));
-const Practice_1 = lazy(() => import('@/pages/Practice_1/Practice_1'));
-const Practice_2 = lazy(() => import('@/pages/Practice_2/Practice_2'));
-const Practice_3 = lazy(() => import('@/pages/Practice_3/Practice_3'));
+const Sprint = lazy(() => import('@/pages/Sprint/Sprint'));
 const Qualifying = lazy(() => import('@/pages/Qualifying/Qualifying'));
 const RaceDetail = lazy(() => import('@/pages/RaceDetail/RaceDetail'));
 const RaceResult = lazy(() => import('@/pages/RaceResult/RaceResult'));
 const SeasonRaceResults = lazy(() => import('@/pages/SeasonRaceResults/SeasonRaceResults'));
 const Schedule = lazy(() => import('@/pages/Schedule/Schedule'));
 const Result = lazy(() => import('@/pages/Result/Result'));
-const StartingGrid = lazy(() => import('@/pages/StartingGrid/StartingGrid'));
 const TeamDetail = lazy(() => import('@/pages/TeamDetail/TeamDetail'));
 const TeamStandings = lazy(() => import('@/pages/TeamStandings/TeamStandings'));
 const Teams = lazy(() => import('@/pages/Teams/Teams'));
@@ -63,24 +60,12 @@ export const router = createBrowserRouter([
                     element: <PitStopSummary />
                   },
                   {
-                    path: 'starting-grid',
-                    element: <StartingGrid />
-                  },
-                  {
                     path: 'qualifying',
                     element: <Qualifying />
                   },
                   {
-                    path: 'practice-3',
-                    element: <Practice_3 />
-                  },
-                  {
-                    path: 'practice-2',
-                    element: <Practice_2 />
-                  },
-                  {
-                    path: 'practice-1',
-                    element: <Practice_1 />
+                    path: 'sprint-result',
+                    element: <Sprint />
                   }
                 ]
               }

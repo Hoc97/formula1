@@ -1,10 +1,13 @@
+import { useTeams, useYear } from '@/modules';
 import '@/pages/TeamStandings/TeamStandings.scss';
 import type { ColumnsType } from 'antd/es/table';
 import Table from 'antd/es/table';
+import { useMemo } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Spin } from 'antd';
 
 interface DataType {
-  key: string;
+  key: React.Key;
   pos: string;
   team: string;
   pts: string;
@@ -12,6 +15,7 @@ interface DataType {
 
 const TeamStandings = () => {
   const param = useParams();
+
   const nav = useNavigate();
 
   const columns: ColumnsType<DataType> = [
@@ -37,26 +41,21 @@ const TeamStandings = () => {
     }
   ];
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      pos: '1',
-      team: 'RED BULL RACING HONDA RBPT',
-      pts: '170'
-    },
-    {
-      key: '2',
-      pos: '1',
-      team: 'RED BULL RACING HONDA RBPT',
-      pts: '170'
-    },
-    {
-      key: '3',
-      pos: '1',
-      team: 'RED BULL RACING HONDA RBPT',
-      pts: '170'
-    }
-  ];
+  const [year] = useYear();
+  const teamsQuery = useTeams(year);
+
+  const data: DataType[] = useMemo(() => {
+    const dataTeams = (teamsQuery.data?.StandingsTable?.StandingsLists[0]?.ConstructorStandings as any[]) ?? [];
+    return dataTeams.map((item) => {
+      return {
+        key: item.position,
+        pos: item.position,
+        team: item.Constructor.name.toUpperCase(),
+        pts: item.points
+      };
+    });
+  }, [teamsQuery.data]);
+  console.log('data', data, teamsQuery.isFetching, teamsQuery.isLoading);
 
   return (
     <div className='teams-container'>
@@ -64,8 +63,20 @@ const TeamStandings = () => {
         <Outlet />
       ) : (
         <div className='teams-content'>
-          <h1>{param.season} Constructor Standings</h1>
-          <Table columns={columns} dataSource={data} pagination={false} />
+          <h1>{year} Constructor Standings</h1>
+          {data.length > 0 ? (
+            <Table loading={teamsQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+          ) : (
+            <div>
+              {!teamsQuery.isFetching ? (
+                <>
+                  The Constructors Championship was not awarded until <b>1958</b>
+                </>
+              ) : (
+                <Spin />
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

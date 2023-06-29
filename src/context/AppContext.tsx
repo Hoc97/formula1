@@ -8,16 +8,20 @@ type UserContextType = {
   };
   setYear: (year: number) => void;
   setValueForm: (season: number, type: string, responseKey: string) => void;
+  currentTabMenu: string;
+  setCurrentTabMenu: (ResultMenu: string) => void;
 };
 
 const iUserContextState: UserContextType = {
   valueForm: {
     season: new Date().getFullYear(),
     type: 'races',
-    responseKey: 'all'
+    responseKey: 'ALL'
   },
   setYear: () => undefined,
-  setValueForm: () => undefined
+  setValueForm: () => undefined,
+  currentTabMenu: 'race-result',
+  setCurrentTabMenu: () => undefined
 };
 
 const AppContext = createContext<UserContextType>(iUserContextState);
@@ -27,10 +31,11 @@ export const AppProvider = ({ children }) => {
     valueForm: {
       season: new Date().getFullYear(),
       type: 'races',
-      responseKey: 'all'
+      responseKey: 'ALL'
     }
   };
   const [state, setStateContext] = useState(initState);
+  const [currentTabMenu, setCurrentTabMenu] = useState('race-result');
 
   const setYear = (year: number) => {
     setStateContext({
@@ -49,7 +54,11 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  return <AppContext.Provider value={{ ...state, setYear, setValueForm }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{ ...state, setYear, setValueForm, currentTabMenu, setCurrentTabMenu }}>
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export default AppContext;

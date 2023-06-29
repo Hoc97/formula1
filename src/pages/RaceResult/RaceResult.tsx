@@ -1,13 +1,16 @@
+import { useRaceResult, useYear } from '@/modules';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
 type DataType = {
-  key: string;
+  key: React.Key;
   pos: string;
   no: string;
   driver: string;
-  car: string;
-  laps: number;
+  team: string;
+  laps: string;
   time: string;
   pts: string;
 };
@@ -27,8 +30,8 @@ const columns: ColumnsType<DataType> = [
     className: 'highlight'
   },
   {
-    title: 'CAR',
-    dataIndex: 'car',
+    title: 'TEAM',
+    dataIndex: 'team',
     className: 'highlight'
   },
   {
@@ -48,62 +51,35 @@ const columns: ColumnsType<DataType> = [
   }
 ];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    pos: '1',
-    no: '1',
-    driver: 'Max Verstappen',
-    car: 'RED BULL RACING HONDA RBPT',
-    laps: 57,
-    time: '1:33:56.736',
-    pts: '25'
-  },
-  {
-    key: '2',
-    pos: '1',
-    no: '1',
-    driver: 'Max Verstappen',
-    car: 'RED BULL RACING HONDA RBPT',
-    laps: 57,
-    time: '1:33:56.736',
-    pts: '25'
-  },
-  {
-    key: '3',
-    pos: '1',
-    no: '1',
-    driver: 'Max Verstappen',
-    car: 'RED BULL RACING HONDA RBPT',
-    laps: 57,
-    time: '1:33:56.736',
-    pts: '25'
-  }
-];
-
 const RaceResult = () => {
-  // const listWinners = useMemo(() => {
-  //   return results.map((rangkingRaces) => {
-  //      return rangkingRaces?.data?.map?.((item,index) => {
-  //       const arrayPts = [25,18,15,12,10,8,6,4,2,1]
-  //       return {
-  //         position: item.position,
-  //         no: item.driver.number,
-  //         id_driver: item.driver.id,
-  //         driver: item.driver.name,
-  //         team: item.team.name,
-  //         laps: item.laps,
-  //         time: item.time,
-  //         pts : arrayPts[index] || 0
-  //       }
-  //      })
-  //   })
-  // }, [results]);
-  return (
-    <>
-      <Table columns={columns} dataSource={data} pagination={false} />
-    </>
-  );
+  const { round } = useOutletContext<{ round: string | number }>();
+  const [year] = useYear();
+  const racesResultQuery = useRaceResult(year, round as string, { enabled: !!round });
+
+  const data: DataType[] = useMemo(() => {
+    const dataRaceResult = (racesResultQuery.data?.RaceTable?.Races[0]?.Results as any[]) ?? [];
+    return (
+      dataRaceResult.map((item, index) => {
+        return {
+          key: item.position + index,
+          pos: item.position,
+          no: item.number,
+          driver: `${item.Driver.givenName} ${item.Driver.familyName}`,
+          team: item.Constructor.name.toUpperCase(),
+          laps: item.laps,
+          time:
+            item.status === 'Finished' || item.status.includes('Lap')
+              ? item.Time?.time
+                ? item.Time.time
+                : item.status
+              : 'DNF',
+          pts: item.points
+        };
+      }) ?? []
+    );
+  }, [racesResultQuery.data]);
+
+  return <Table loading={racesResultQuery.isFetching} columns={columns} dataSource={data} pagination={false} />;
 };
 
 export default RaceResult;
