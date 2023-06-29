@@ -4,7 +4,7 @@ import Table from 'antd/es/table';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 interface DataType {
-  key: string;
+  key: React.Key;
   grand_prix: string;
   date: string;
   car: string;

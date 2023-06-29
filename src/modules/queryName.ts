@@ -1,7 +1,13 @@
 export const queryName = {
-  listSeason: 'Get-List-Season',
-  listRaces: 'Get-List-Races',
-  rankingsRace: 'Get-Rankings-Race',
-  listDrivers: 'Get-List-Drivers',
-  listTeams: 'Get-List-Teams'
+  listSeason: 'GetListSeason',
+  listRaces: 'GetListRaces',
+  listRaceResults: 'GetListRaceResults',
+  raceResults: 'GetRaceResult',
+  sprintByRound: 'GetSprintByRound',
+  listFastestLapAward: 'GetListFastestLapAward',
+  rankingsRace: 'GetRankingsRace',
+  listDrivers: 'GetListDrivers',
+  listTeams: 'GetListTeams',
+  listPitStopSummaryByRound: 'GetPitStopSummaryByRound',
+  listQualifying: 'GetQualifyingByRound'
 };

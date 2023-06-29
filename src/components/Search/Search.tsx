@@ -1,8 +1,6 @@
-import useDrivers from '@/modules/useDrivers';
-import useRQGlobalState from '@/modules/useRQGlobalState';
-import useRaces from '@/modules/useRaces';
-import useTeams from '@/modules/useTeams';
-import { Col, Form, FormInstance, Row, Select } from 'antd';
+import { useDriverStandings, useRaceResults, useTabMenu, useTeams, useValueForm, useYear } from '@/modules';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Col, Form, FormInstance, Row, Select, Spin } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,113 +22,126 @@ const Search = () => {
   const nav = useNavigate();
   const formRef = useRef<FormInstance>(null);
   const [form] = Form.useForm();
-  const [responseLabel, setResponseLabel] = useState('Location');
-  const [responseData, setResponseData] = useState<string[]>(['all']);
-  const [initialValueForm, setInitialValueForm] = useRQGlobalState('initialValueForm', {
-    season: 2023,
-    type: 'races',
-    responseKey: 'all'
-  });
+  const [responseLabel, setResponseLabel] = useState('Race name');
+  const [responseData, setResponseData] = useState(['ALL']);
+  const { valueForm, setValueForm } = useValueForm();
+  const { currentTabMenu, setCurrentTabMenu } = useTabMenu();
 
-  // const dataSeasonsQuery = useSeasons();
+  const yearArray = useMemo(() => {
+    const thisYear = new Date().getFullYear();
+    const filterSize = thisYear - 1950 + 1;
+    return Array(filterSize)
+      .fill(0)
+      .map((_, i) => i + 1950)
+      .reverse();
+  }, []);
 
-  const dataRacesQuery = useRaces({ season: initialValueForm?.season, type: 'race' });
-  const dataTeamsQuery = useTeams({ season: initialValueForm?.season });
-  const dataDriversQuery = useDrivers({ season: initialValueForm?.season });
+  const [year] = useYear();
 
-  const listLocation = useMemo(() => {
-    return dataRacesQuery?.data?.map?.((item) => {
-      return item?.competition?.location?.country;
-    });
-  }, [dataRacesQuery.data]);
+  const racesResultsQuery = useRaceResults(year, { enabled: false });
+  const driversQuery = useDriverStandings(year, { enabled: false });
+  const teamsQuery = useTeams(year, { enabled: false });
+
+  const listRaceName: string[] = useMemo(() => {
+    const dataRaceResults = (racesResultsQuery.data?.RaceTable?.Races as any[]) ?? [];
+    return dataRaceResults.map((item) => item.raceName.replace(' Grand Prix', '').toUpperCase());
+  }, [racesResultsQuery.data]);
 
   const listDrivers = useMemo(() => {
-    return dataDriversQuery?.data
-      ?.map?.((item) => {
-        return `${item?.driver?.name?.split(' ')[1]}, ${item?.driver?.name?.split(' ')[0]}`;
-      })
-      ?.sort();
-  }, [dataDriversQuery.data]);
+    const dataDrivers = (driversQuery.data?.StandingsTable?.StandingsLists[0]?.DriverStandings as any[]) ?? [];
+    return dataDrivers.map((item) => `${item.Driver.familyName}, ${item.Driver.givenName}`.toUpperCase()).sort();
+  }, [driversQuery.data]);
 
   const listTeams = useMemo(() => {
-    return dataTeamsQuery?.data?.map?.((item) => item?.team?.name)?.sort();
-  }, [dataTeamsQuery.data]);
+    const dataTeams = (teamsQuery.data?.StandingsTable?.StandingsLists[0]?.ConstructorStandings as any[]) ?? [];
+    return dataTeams.map((item) => item.Constructor.name.toUpperCase()).sort();
+  }, [teamsQuery.data]);
 
   useEffect(() => {
-    form.setFieldsValue(initialValueForm);
+    form.setFieldsValue(valueForm);
 
-    if (initialValueForm?.type === 'races' && listLocation) {
-      setResponseLabel('Location');
-      setResponseData(['all', ...listLocation]);
+    if (valueForm.type === 'races' && listRaceName.length > 0) {
+      setResponseLabel('Race name');
+      setResponseData(['ALL', ...listRaceName]);
       return;
     }
-    if (initialValueForm?.type === 'drivers' && listDrivers) {
+    if (valueForm.type === 'drivers' && listDrivers.length > 0) {
       setResponseLabel('Driver');
-      setResponseData(['all', ...listDrivers]);
+      setResponseData(['ALL', ...listDrivers]);
       return;
     }
-    if (initialValueForm?.type === 'teams' && listTeams) {
+    if (valueForm.type === 'teams' && listTeams.length > 0) {
       setResponseLabel('Team');
-      setResponseData(['all', ...listTeams]);
+      setResponseData(['ALL', ...listTeams]);
       return;
+    } else if (valueForm.type === 'teams' && listTeams.length === 0) {
+      setResponseLabel('Team');
+      setResponseData(['ALL']);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValueForm, listLocation, listDrivers]);
+  }, [valueForm, listRaceName, listDrivers, listTeams]);
+
+  const handleSeason = () => {
+    form.setFieldsValue({
+      responseKey: 'ALL'
+    });
+    setTimeout(() => {
+      setCurrentTabMenu('race-result');
+    }, 300);
+    formRef.current?.submit();
+  };
 
   const handleSubmit = (value: string) => {
-    if (value === 'races' && dataRacesQuery.isStale) {
-      dataRacesQuery.refetch();
+    if (value === 'races' && racesResultsQuery.isStale) {
+      racesResultsQuery.refetch();
     }
-    if (value === 'drivers' && dataDriversQuery.isStale) {
-      dataDriversQuery.refetch();
+    if (value === 'drivers' && driversQuery.isStale) {
+      driversQuery.refetch();
     }
-    if (value === 'teams' && dataTeamsQuery.isStale) {
-      dataTeamsQuery.refetch();
+    if (value === 'teams' && teamsQuery.isStale) {
+      teamsQuery.refetch();
     }
-    if (
-      value === 'drivers' ||
-      value === 'teams' ||
-      (value === 'races' && !listLocation?.includes(initialValueForm.responseKey))
-    ) {
+    if (value === 'drivers' || value === 'teams' || value === 'races') {
       form.setFieldsValue({
-        responseKey: 'all'
+        responseKey: 'ALL'
       });
+      setTimeout(() => {
+        setCurrentTabMenu('race-result');
+      }, 300);
     }
     formRef.current?.submit();
   };
 
   const onFinish = (values) => {
-    console.log(values);
+    if (!values.responseKey) {
+      setValueForm(values.season, values.type, 'ALL');
+    } else {
+      setValueForm(values.season, values.type, values.responseKey);
+    }
 
-    setInitialValueForm(values);
-    if (values.responseKey && values.responseKey !== 'all') {
-      if (values.type === 'races' && listLocation) {
-        const dataItem = dataRacesQuery.data?.[listLocation.indexOf(values.responseKey)];
-        nav(`/results/${values.season}/${values.type}/${values.responseKey.toLowerCase()}/race-result`, {
-          state: { name: dataItem }
-        });
+    if (values.responseKey && values.responseKey !== 'ALL') {
+      if (values.type === 'races') {
+        nav(`/results/${values.season}/${values.type}/${values.responseKey.toLowerCase()}/${currentTabMenu}`);
         return;
       }
       if (values.type === 'drivers' || values.type === 'teams') {
-        nav(`/results/${values.season}/${values.type}/${values.responseKey.toLowerCase()}`, {
-          state: { name: values }
-        });
+        nav(`/results/${values.season}/${values.type}/${values.responseKey.toLowerCase()}`);
         return;
       }
     }
-    nav(`/results/${values.season}/${values.type}`, { state: { name: values } });
+    nav(`/results/${values.season}/${values.type}`);
   };
 
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   return (
     <>
       <Form ref={formRef} form={form} layout='vertical' autoComplete='off' onFinish={onFinish}>
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item name='season' label='Season'>
-              <Select placeholder='Select season' onChange={handleSubmit}>
+              <Select placeholder='Select season' onChange={handleSeason}>
                 <>
-                  {/* {[...(dataSeasonsQuery?.data ?? [])]?.reverse?.().map((item) => { */}
-                  {[2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012].map((item) => {
+                  {yearArray.map((item) => {
                     return (
                       <Option key={item} value={item}>
                         {item}
@@ -164,17 +175,23 @@ const Search = () => {
               getFieldValue('type') === 'drivers' ||
               getFieldValue('type') === 'teams' ? (
                 <Col span={8}>
-                  <Form.Item name='responseKey' label={`${responseLabel}`}>
-                    <Select placeholder={`Select ${responseLabel.toLowerCase()}`} onChange={handleSubmit}>
-                      {responseData.map((item, index) => {
-                        return (
-                          <Option key={index} value={item}>
-                            {item.toUpperCase()}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
+                  {racesResultsQuery.isFetching || driversQuery.isFetching || teamsQuery.isFetching ? (
+                    <span>
+                      <Spin indicator={antIcon} style={{ marginTop: '25px' }} />
+                    </span>
+                  ) : (
+                    <Form.Item name='responseKey' label={`${responseLabel}`}>
+                      <Select placeholder={`Select ${responseLabel.toLowerCase()}`} onChange={handleSubmit}>
+                        {responseData.map((item, index) => {
+                          return (
+                            <Option key={index} value={item}>
+                              {item}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
+                  )}
                 </Col>
               ) : null
             }

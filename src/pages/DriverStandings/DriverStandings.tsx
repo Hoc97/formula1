@@ -1,14 +1,16 @@
+import { useDriverStandings, useYear } from '@/modules';
 import '@/pages/DriverStandings/DriverStandings.scss';
 import type { ColumnsType } from 'antd/es/table';
 import Table from 'antd/es/table';
+import { useMemo } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 interface DataType {
-  key: string;
+  key: React.Key;
   pos: string;
   driver: string;
   nationality: string;
-  car: string;
+  team: string;
   pts: string;
 }
 
@@ -38,9 +40,9 @@ const DriverStandings = () => {
       dataIndex: 'nationality'
     },
     {
-      title: 'CAR',
-      dataIndex: 'car',
-      className: 'car',
+      title: 'TEAM',
+      dataIndex: 'team',
+      className: 'team',
       render: (text) => {
         return (
           <span key={text} onClick={() => nav(`/results/${param.season}/teams/${text}`, { state: { name: text } })}>
@@ -55,32 +57,24 @@ const DriverStandings = () => {
     }
   ];
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      pos: '1',
-      driver: 'Max Verstappen',
-      nationality: 'NED',
-      car: 'RED BULL RACING HONDA RBPT',
-      pts: '170'
-    },
-    {
-      key: '2',
-      pos: '1',
-      driver: 'Max Verstappen',
-      nationality: 'NED',
-      car: 'RED BULL RACING HONDA RBPT',
-      pts: '170'
-    },
-    {
-      key: '3',
-      pos: '1',
-      driver: 'Max Verstappen',
-      nationality: 'NED',
-      car: 'RED BULL RACING HONDA RBPT',
-      pts: '170'
-    }
-  ];
+  const [year] = useYear();
+  const driversQuery = useDriverStandings(year);
+
+  const data: DataType[] = useMemo(() => {
+    const dataDrivers = (driversQuery.data?.StandingsTable?.StandingsLists[0]?.DriverStandings as any[]) ?? [];
+    return (
+      dataDrivers.map((item) => {
+        return {
+          key: item.position,
+          pos: item.position,
+          driver: `${item.Driver.givenName} ${item.Driver.familyName}`,
+          nationality: item.Driver.nationality,
+          team: item.Constructors[0].name.toUpperCase(),
+          pts: item.points
+        };
+      }) ?? []
+    );
+  }, [driversQuery.data]);
 
   return (
     <div className='driver-standings-container'>
@@ -88,8 +82,8 @@ const DriverStandings = () => {
         <Outlet />
       ) : (
         <div className='driver-standings-content'>
-          <h1>{param.season} Driver Standings</h1>
-          <Table columns={columns} dataSource={data} pagination={false} />
+          <h1>{year} Driver Standings</h1>
+          <Table loading={driversQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
         </div>
       )}
     </div>

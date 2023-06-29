@@ -1,15 +1,18 @@
-import { Table } from 'antd';
+import { usePitStopSummaryByRound, useRaceResult, useYear } from '@/modules';
+import { Spin, Table, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
 interface DataType {
-  key: string;
+  key: React.Key;
   stops: string;
   no: string;
   driver: string;
-  car: string;
-  laps: number;
+  team: string;
+  laps: string;
   time: string;
-  total: string;
+  duration: string;
 }
 
 const columns: ColumnsType<DataType> = [
@@ -27,8 +30,8 @@ const columns: ColumnsType<DataType> = [
     className: 'highlight'
   },
   {
-    title: 'CAR',
-    dataIndex: 'car',
+    title: 'TEAM',
+    dataIndex: 'team',
     className: 'highlight'
   },
   {
@@ -37,54 +40,64 @@ const columns: ColumnsType<DataType> = [
     className: 'highlight'
   },
   {
-    title: 'TIME',
+    title: 'TIME OF DAY',
     dataIndex: 'time',
     className: 'highlight'
   },
   {
-    title: 'TOTAL',
-    dataIndex: 'total',
+    title: 'DURATION',
+    dataIndex: 'duration',
     className: 'highlight'
   }
 ];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    stops: '1',
-    no: '10',
-    driver: 'Pierre Gasly',
-    car: 'ALPINE RENAULT',
-    laps: 9,
-    time: '25.885',
-    total: '25.885'
-  },
-  {
-    key: '2',
-    stops: '1',
-    no: '10',
-    driver: 'Pierre Gasly',
-    car: 'ALPINE RENAULT',
-    laps: 9,
-    time: '25.885',
-    total: '25.885'
-  },
-  {
-    key: '3',
-    stops: '1',
-    no: '10',
-    driver: 'Pierre Gasly',
-    car: 'ALPINE RENAULT',
-    laps: 9,
-    time: '25.885',
-    total: '25.885'
-  }
-];
-
 const PitStopSummary = () => {
+  const { round } = useOutletContext<{ round: string | number }>();
+  const [year] = useYear();
+  const racesResultQuery = useRaceResult(year, round as string, { enabled: !!round });
+  const pitStopSummaryQuery = usePitStopSummaryByRound(year, round as string, { enabled: !!round });
+
+  const dataInfoDriver = useMemo(() => {
+    const dataRaceResult = (racesResultQuery.data?.RaceTable?.Races[0]?.Results as any[]) ?? [];
+    return (
+      dataRaceResult.map((item) => {
+        return {
+          no: item.number,
+          driver: `${item.Driver.givenName} ${item.Driver.familyName}`,
+          driverId: item.Driver.driverId,
+          team: item.Constructor.name.toUpperCase()
+        };
+      }) ?? []
+    );
+  }, [racesResultQuery.data]);
+
+  const data: DataType[] = useMemo(() => {
+    const dataPitStops = (pitStopSummaryQuery.data?.RaceTable?.Races[0]?.PitStops as any[]) ?? [];
+    return dataPitStops.map((item, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const InfoDriver = dataInfoDriver.find((driver) => driver.driverId === item.driverId)!;
+      return {
+        key: item.driverId + index,
+        stops: item.stop,
+        no: InfoDriver.no,
+        driver: InfoDriver.driver,
+        team: InfoDriver.team,
+        laps: item.lap,
+        time: item.time,
+        duration: item.duration
+      };
+    });
+  }, [pitStopSummaryQuery.data, dataInfoDriver]);
+
   return (
     <>
-      <Table columns={columns} dataSource={data} pagination={false} />
+      {data.length > 0 ? (
+        <Table loading={pitStopSummaryQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+      ) : (
+        <Typography.Title level={3}>
+          {!pitStopSummaryQuery.isFetching ? <>No pit stops results for this round</> : <Spin />}
+        </Typography.Title>
+      )}
     </>
   );
 };

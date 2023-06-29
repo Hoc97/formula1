@@ -4,7 +4,7 @@ import Table from 'antd/es/table';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface DataType {
-  key: string;
+  key: React.Key;
   grand_prix: string;
   date: string;
   pts: string;
@@ -22,9 +22,7 @@ const TeamDetail = () => {
         return (
           <span
             key={text}
-            onClick={() =>
-              nav(`/results/${season}/races/${text}/race-result`, { state: { name: text } })
-            }>
+            onClick={() => nav(`/results/${season}/races/${text}/race-result`, { state: { name: text } })}>
             {text}
           </span>
         );

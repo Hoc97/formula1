@@ -1,12 +1,16 @@
-import { Table } from 'antd';
+import { useRaceResult, useYear } from '@/modules';
+import { Spin, Table, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import _ from 'lodash';
 
 interface DataType {
-  key: string;
-  pos: string;
+  key: React.Key;
+  rank: number;
   no: string;
   driver: string;
-  car: string;
+  team: string;
   laps: number;
   time: string;
   avg_speed: string;
@@ -15,7 +19,7 @@ interface DataType {
 const columns: ColumnsType<DataType> = [
   {
     title: 'POS',
-    dataIndex: 'pos'
+    dataIndex: 'rank'
   },
   {
     title: 'NO',
@@ -27,8 +31,8 @@ const columns: ColumnsType<DataType> = [
     className: 'highlight'
   },
   {
-    title: 'CAR',
-    dataIndex: 'car',
+    title: 'TEAM',
+    dataIndex: 'team',
     className: 'highlight'
   },
   {
@@ -48,43 +52,44 @@ const columns: ColumnsType<DataType> = [
   }
 ];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    pos: '1',
-    no: '24',
-    driver: 'Zhou Guanyu',
-    car: 'ALFA ROMEO FERRARI',
-    laps: 57,
-    time: '1:33.996',
-    avg_speed: '207.276'
-  },
-  {
-    key: '2',
-    pos: '1',
-    no: '24',
-    driver: 'Zhou Guanyu',
-    car: 'ALFA ROMEO FERRARI',
-    laps: 57,
-    time: '1:33.996',
-    avg_speed: '207.276'
-  },
-  {
-    key: '3',
-    pos: '1',
-    no: '24',
-    driver: 'Zhou Guanyu',
-    car: 'ALFA ROMEO FERRARI',
-    laps: 57,
-    time: '1:33.996',
-    avg_speed: '207.276'
-  }
-];
-
 const FastestLaps = () => {
+  // with first render is round = 0 (number)
+  const { round } = useOutletContext<{ round: string | number }>();
+  const [year] = useYear();
+  const racesResultQuery = useRaceResult(year, round as string, { enabled: !!round });
+
+  const data: DataType[] = useMemo(() => {
+    const dataRaceResult = (racesResultQuery.data?.RaceTable?.Races[0]?.Results as any[]) ?? [];
+    let data =
+      (dataRaceResult
+        .map((item, index) => {
+          if (+item.laps > 0 && item?.FastestLap?.rank) {
+            return {
+              key: item.position + index,
+              rank: +item?.FastestLap?.rank,
+              no: item?.number,
+              driver: `${item.Driver.givenName} ${item.Driver.familyName}`,
+              team: item.Constructor.name.toUpperCase(),
+              laps: item?.FastestLap?.lap,
+              time: item?.FastestLap?.Time?.time,
+              avg_speed: item?.FastestLap?.AverageSpeed?.speed
+            };
+          }
+        })
+        .filter((item) => item !== undefined) as DataType[]) ?? [];
+    data = _.orderBy(data, ['rank'], ['asc']);
+
+    return data;
+  }, [racesResultQuery.data]);
   return (
     <>
-      <Table columns={columns} dataSource={data} pagination={false} />
+      {data.length > 0 ? (
+        <Table loading={racesResultQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+      ) : (
+        <Typography.Title level={3}>
+          {!racesResultQuery.isFetching ? <>No fastest laps results for this round</> : <Spin />}
+        </Typography.Title>
+      )}
     </>
   );
 };

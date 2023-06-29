@@ -16,7 +16,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   function (response) {
-    return response?.data?.response ? response.data.response : response;
+    return response?.data?.MRData ? response.data.MRData : response;
   },
   async function (error) {
     return error?.response ?? Promise.reject(error);

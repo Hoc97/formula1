@@ -1,25 +1,62 @@
 import axios from '@/services/axios';
 import endpoints from '@/services/endpoints';
-import { DriversQueryOptions, RacesQueryOptions, TeamsQueryOptions, RankingRacesQueryOptions } from '@/types/type';
+import {
+  DriversQueryOptions,
+  RacesQueryOptions,
+  TeamsQueryOptions,
+  RaceResultsQueryOptions,
+  RaceResultQueryOptions
+} from '@/types/type';
 
-const getListSeasons = (): Promise<number[]> => {
-  return axios.get(endpoints.seasons);
+const getListRaces = (season: string): Promise<RacesQueryOptions> => {
+  return axios.get(`${season}.json`);
 };
 
-const getListRaces = (params?: RacesQueryOptions): Promise<any[]> => {
-  return axios.get(endpoints.races, { params });
+const getListRaceResults = (season: string): Promise<RaceResultsQueryOptions> => {
+  return axios.get(`${season}/results.json?limit=500`);
+};
+
+const getRaceResult = (season: string, round: string): Promise<RaceResultQueryOptions> => {
+  return axios.get(`${season}/${round}/results.json`);
+};
+
+const getQualifying = (season: string, round: string): Promise<RaceResultQueryOptions> => {
+  return axios.get(`${season}/${round}/qualifying.json`);
+};
+
+const getSprint = (season: string, round: string): Promise<RaceResultQueryOptions> => {
+  return axios.get(`${season}/${round}/sprint.json`);
+};
+
+const getListDrivers = (season: string): Promise<DriversQueryOptions> => {
+  return axios.get(`${season}/driverStandings.json`);
+};
+
+const getListTeams = (season: string): Promise<TeamsQueryOptions> => {
+  return axios.get(`${season}/constructorStandings.json`);
+};
+
+const getListFastestLapTimes = (season: string): Promise<RacesQueryOptions> => {
+  return axios.get(`${season}/fastest/1/results.json`);
+};
+
+const getPitStopSummary = (season: string, round: string): Promise<RacesQueryOptions> => {
+  return axios.get(`${season}/${round}/pitstops.json?limit=100`);
 };
 
 const getRankingRaces = (params?: any): Promise<any[]> => {
   return axios.get(endpoints.rankingRaces, { params });
 };
 
-const getListDrivers = (params?: DriversQueryOptions): Promise<any[]> => {
-  return axios.get(endpoints.drivers, { params });
+export {
+  getListRaces,
+  getListDrivers,
+  getListTeams,
+  getRankingRaces,
+  getListRaceResults,
+  getRaceResult,
+  getListFastestLapTimes,
+  getPitStopSummary,
+  getQualifying,
+  getSprint
 };
-
-const getListTeams = (params?: TeamsQueryOptions): Promise<any[]> => {
-  return axios.get(endpoints.teams, { params });
-};
-
-export { getListRaces, getListSeasons, getListDrivers, getListTeams, getRankingRaces };
