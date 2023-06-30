@@ -8,9 +8,7 @@ const SeasonFilter = () => {
   const [year, setYear] = useYear();
 
   useEffect(() => {
-    form.setFieldsValue({
-      season: year
-    });
+    form.setFieldsValue({ season: year });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [year]);
 

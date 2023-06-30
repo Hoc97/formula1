@@ -59,22 +59,21 @@ const Search = () => {
 
   useEffect(() => {
     form.setFieldsValue(valueForm);
-
-    if (valueForm.type === 'races' && listRaceName.length > 0) {
-      setResponseLabel('Race name');
-      setResponseData(['ALL', ...listRaceName]);
-      return;
-    }
-    if (valueForm.type === 'drivers' && listDrivers.length > 0) {
-      setResponseLabel('Driver');
-      setResponseData(['ALL', ...listDrivers]);
-      return;
-    }
-    if (valueForm.type === 'teams' && listTeams.length > 0) {
-      setResponseLabel('Team');
-      setResponseData(['ALL', ...listTeams]);
-      return;
-    } else if (valueForm.type === 'teams' && listTeams.length === 0) {
+    const { type } = valueForm;
+    const label = {
+      races: 'Race name',
+      drivers: 'Driver',
+      teams: 'Team'
+    };
+    const responseData = {
+      races: listRaceName,
+      drivers: listDrivers,
+      teams: listTeams
+    };
+    if (type !== 'fastest-laps-award' && responseData[type].length > 0) {
+      setResponseLabel(label[type]);
+      setResponseData(['ALL', ...responseData[type]]);
+    } else if (type === 'teams' && responseData[type].length === 0) {
       setResponseLabel('Team');
       setResponseData(['ALL']);
     }
@@ -82,29 +81,8 @@ const Search = () => {
   }, [valueForm, listRaceName, listDrivers, listTeams]);
 
   const handleSeason = () => {
-    form.setFieldsValue({
-      responseKey: 'ALL'
-    });
-    setTimeout(() => {
-      setCurrentTabMenu('race-result');
-    }, 300);
-    formRef.current?.submit();
-  };
-
-  const handleSubmit = (value: string) => {
-    if (value === 'races' && racesResultsQuery.isStale) {
-      racesResultsQuery.refetch();
-    }
-    if (value === 'drivers' && driversQuery.isStale) {
-      driversQuery.refetch();
-    }
-    if (value === 'teams' && teamsQuery.isStale) {
-      teamsQuery.refetch();
-    }
-    if (value === 'drivers' || value === 'teams' || value === 'races') {
-      form.setFieldsValue({
-        responseKey: 'ALL'
-      });
+    form.setFieldsValue({ responseKey: 'ALL' });
+    if (currentTabMenu !== 'race-result') {
       setTimeout(() => {
         setCurrentTabMenu('race-result');
       }, 300);
@@ -112,24 +90,47 @@ const Search = () => {
     formRef.current?.submit();
   };
 
-  const onFinish = (values) => {
-    if (!values.responseKey) {
-      setValueForm(values.season, values.type, 'ALL');
-    } else {
-      setValueForm(values.season, values.type, values.responseKey);
-    }
+  const handleSubmit = (value: string) => {
+    const query = {
+      races: racesResultsQuery,
+      drivers: driversQuery,
+      teams: teamsQuery
+    };
+    const typeValue = ['races', 'drivers', 'teams'];
 
-    if (values.responseKey && values.responseKey !== 'ALL') {
-      if (values.type === 'races') {
-        nav(`/results/${values.season}/${values.type}/${values.responseKey.toLowerCase()}/${currentTabMenu}`);
+    if (typeValue.includes(value)) {
+      form.setFieldsValue({ responseKey: 'ALL' });
+      if (query[value].isStale) query[value].refetch();
+      if (currentTabMenu !== 'race-result') {
+        setTimeout(() => {
+          setCurrentTabMenu('race-result');
+        }, 300);
+      }
+    }
+    formRef.current?.submit();
+  };
+
+  const onFinish = (values) => {
+    const { season, type, responseKey } = values;
+    if (!responseKey) {
+      setValueForm(season, type, 'ALL');
+    } else {
+      setValueForm(season, type, responseKey);
+    }
+    if (responseKey && responseKey !== 'ALL') {
+      if (type === 'races') {
+        nav(`/results/${season}/${type}/${responseKey.toLowerCase()}/${currentTabMenu}`);
         return;
       }
-      if (values.type === 'drivers' || values.type === 'teams') {
-        nav(`/results/${values.season}/${values.type}/${values.responseKey.toLowerCase()}`);
+      if (type === 'drivers' || type === 'teams') {
+        const nameDetailArray = responseKey.replace(',', '').split(' ');
+        const nameDetail = [...nameDetailArray.slice(-1), ...nameDetailArray.slice(0, -1)].join('-').toLowerCase();
+        // console.log('nameDetail', nameDetailArray, nameDetail);
+        nav(`/results/${season}/${type}/${nameDetail}`);
         return;
       }
     }
-    nav(`/results/${values.season}/${values.type}`);
+    nav(`/results/${season}/${type}`);
   };
 
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -140,15 +141,13 @@ const Search = () => {
           <Col span={8}>
             <Form.Item name='season' label='Season'>
               <Select placeholder='Select season' onChange={handleSeason}>
-                <>
-                  {yearArray.map((item) => {
-                    return (
-                      <Option key={item} value={item}>
-                        {item}
-                      </Option>
-                    );
-                  })}
-                </>
+                {yearArray.map((item) => {
+                  return (
+                    <Option key={item} value={item}>
+                      {item}
+                    </Option>
+                  );
+                })}
               </Select>
             </Form.Item>
           </Col>
