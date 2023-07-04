@@ -10,12 +10,11 @@ const { Header } = Layout;
 
 const HeaderPage = () => {
   const { pathname } = useLocation();
-  const { season, raceDetail, driverStandingDetail } = useParams();
+  const { season, raceDetail, driverStandingDetail, teamStandingDetail } = useParams();
   const { valueForm, setValueForm } = useValueForm();
   const { currentTabMenu, setCurrentTabMenu } = useTabMenu();
   const [current, setCurrent] = useState('');
   const [year] = useYear();
-
 
   useEffect(() => {
     const lastParam = pathname.match(/[^/]+$/g)?.[0];
@@ -28,7 +27,7 @@ const HeaderPage = () => {
       teams: 'F1 Teams'
     };
 
-    if (lastParam && (pathname === `/${lastParam}`)) {
+    if (lastParam && pathname === `/${lastParam}`) {
       setCurrent(lastParam);
       document.title = `${title[lastParam]} ${year}`;
       return;
@@ -46,7 +45,6 @@ const HeaderPage = () => {
     if (season && pathname.includes(`/results/${season}`)) {
       document.title = `${title.results} ${season}`;
       setCurrent('results');
-
       if (raceDetail && valueForm.responseKey !== raceDetail.toUpperCase()) {
         setValueForm(+season, 'races', raceDetail.toUpperCase());
         return;
@@ -57,12 +55,16 @@ const HeaderPage = () => {
         setValueForm(+season, 'drivers', nameDetail);
         return;
       }
-      if (
-        lastParam &&
-        ((typeResultParams.includes(lastParam) && (!current || year !== +season)) ||
-          pathname === `/results/${season}/${lastParam}`)
-      ) {
-        setValueForm(+season, lastParam, 'ALL');
+      if (teamStandingDetail && valueForm.responseKey !== teamStandingDetail.toUpperCase()) {
+        setValueForm(+season, 'teams', teamStandingDetail.toUpperCase());
+        return;
+      }
+      if (lastParam && typeResultParams.includes(lastParam)) {
+        if (!current) {
+          setValueForm(+season, lastParam, 'ALL');
+        } else {
+          setValueForm(year, lastParam, 'ALL');
+        }
         return;
       }
       return;

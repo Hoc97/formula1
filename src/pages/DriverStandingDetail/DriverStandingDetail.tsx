@@ -17,7 +17,6 @@ interface DataType {
 
 type DataDriverType = {
   driver: Driver;
-  team: Team;
 };
 
 interface Driver {
@@ -28,13 +27,6 @@ interface Driver {
   givenName: string;
   nationality: string;
   permanentNumber: string;
-  url: string;
-}
-
-interface Team {
-  constructorId: string;
-  name: string;
-  nationality: string;
   url: string;
 }
 
@@ -49,8 +41,7 @@ const DriverStandingDetail = () => {
       setValueForm(year, type, text.toUpperCase());
     }
     if (type === 'teams') {
-      const teamStandingDetail = dataDriver.team.constructorId;
-      nav(`/results/${season}/teams/${teamStandingDetail}`);
+      nav(`/results/${season}/teams/${text.toLowerCase()}`);
       setValueForm(year, type, text);
     }
   };
@@ -102,10 +93,7 @@ const DriverStandingDetail = () => {
     return (
       dataDrivers
         .map((item) => {
-          return {
-            driver: item.Driver,
-            team: item.Constructors[0]
-          };
+          return { driver: item.Driver };
         })
         .find((item) => {
           return (
@@ -117,28 +105,27 @@ const DriverStandingDetail = () => {
     );
   }, [driversQuery.data, driverStandingDetail]);
 
-  const nameTitle = `${dataDriver?.driver?.givenName} ${dataDriver?.driver?.familyName?.charAt(0).toUpperCase() + dataDriver?.driver?.familyName?.slice(1)
-    }`;
+  const nameTitle = `${dataDriver?.driver?.givenName} ${
+    dataDriver?.driver?.familyName?.charAt(0).toUpperCase() + dataDriver?.driver?.familyName?.slice(1)
+  }`;
   const driverId = dataDriver?.driver?.driverId;
 
-  const driverStatsQuery = useDriverStatsById(driverId);
+  const driverStatsQuery = useDriverStatsById(year, driverId, { enabled: !!driverId });
   const data: DataType[] = useMemo(() => {
     const dataDriverStats = (driverStatsQuery.data?.RaceTable?.Races as any[]) ?? [];
     return (
-      dataDriverStats
-        .filter((item) => item.season === year.toString())
-        .map((item) => {
-          return {
-            key: item.season + item.round,
-            grand_prix: item.raceName.replace(' Grand Prix', ''),
-            date: moment(item.date).format('DD MMM YYYY'),
-            team: item.Results[0].Constructor.name.toUpperCase(),
-            race_position: item.Results[0].position,
-            pts: item.Results[0].points
-          };
-        }) ?? []
+      dataDriverStats.map((item) => {
+        return {
+          key: item.season + item.round,
+          grand_prix: item.raceName.replace(' Grand Prix', ''),
+          date: moment(item.date).format('DD MMM YYYY'),
+          team: item.Results[0].Constructor.name.toUpperCase(),
+          race_position: item.Results[0].position,
+          pts: item.Results[0].points
+        };
+      }) ?? []
     );
-  }, [driverStatsQuery.data, year]);
+  }, [driverStatsQuery.data]);
 
   const loading = driverStatsQuery.isFetching || driverStatsQuery.isLoading;
   return (

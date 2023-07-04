@@ -33,20 +33,24 @@ const getListDrivers = (season: string): Promise<DriversQueryOptions> => {
   return axios.get(`${season}/driverStandings.json`);
 };
 
-const getDriverStatsById = (driverId: string): Promise<RacesQueryOptions> => {
-  return axios.get(`/drivers/${driverId}/results.json?limit=500`);
+const getDriverStatsById = (season: string, driverId: string): Promise<RacesQueryOptions> => {
+  return axios.get(`${season}/drivers/${driverId}/results.json?limit=100`);
 };
 
 const getDriverInfoById = (driverId: string): Promise<DriverInfoQueryOptions> => {
-  return axios.get(`/drivers/${driverId}.json`);
+  return axios.get(`drivers/${driverId}.json`);
 };
 
 const getDriverChampsById = (driverId: string): Promise<DriversQueryOptions> => {
-  return axios.get(`/drivers/${driverId}/driverStandings.json?limit=500`);
+  return axios.get(`drivers/${driverId}/driverStandings.json?limit=500`);
 };
 
 const getListTeams = (season: string): Promise<TeamsQueryOptions> => {
   return axios.get(`${season}/constructorStandings.json`);
+};
+
+const getTeamStatsById = (season: string, teamId: string): Promise<RacesQueryOptions> => {
+  return axios.get(`${season}/constructors/${teamId}/results.json?limit=100`);
 };
 
 const getListFastestLapTimes = (season: string): Promise<RacesQueryOptions> => {
@@ -74,5 +78,6 @@ export {
   getSprint,
   getDriverStatsById,
   getDriverInfoById,
-  getDriverChampsById
+  getDriverChampsById,
+  getTeamStatsById
 };

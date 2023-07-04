@@ -122,11 +122,14 @@ const Search = () => {
         nav(`/results/${season}/${type}/${responseKey.toLowerCase()}/${currentTabMenu}`);
         return;
       }
-      if (type === 'drivers' || type === 'teams') {
+      if (type === 'drivers') {
         const nameDetailArray = responseKey.replace(',', '').split(' ');
         const nameDetail = [...nameDetailArray.slice(-1), ...nameDetailArray.slice(0, -1)].join('-').toLowerCase();
-        // console.log('nameDetail', nameDetailArray, nameDetail);
         nav(`/results/${season}/${type}/${nameDetail}`);
+        return;
+      }
+      if (type === 'teams') {
+        nav(`/results/${season}/${type}/${responseKey.toLowerCase()}`);
         return;
       }
     }

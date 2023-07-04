@@ -17,19 +17,12 @@ interface Driver {
   url: string;
 }
 
-interface Team {
-  constructorId: string;
-  name: string;
-  nationality: string;
-  url: string;
-}
-
 interface DataType {
   key: React.Key;
   pos: string;
   driver: Driver;
   nationality: string;
-  team: Team;
+  team: string;
   pts: string;
 }
 
@@ -38,7 +31,7 @@ const DriverStandings = () => {
   const nav = useNavigate();
   const { setValueForm } = useValueForm();
 
-  const handleChange = (text: Driver | Team, type: string) => {
+  const handleChange = (text: Driver | string, type: string) => {
     if (type === 'drivers') {
       text = text as Driver;
       const name = `${text.familyName}, ${text.givenName}`.toUpperCase();
@@ -46,9 +39,8 @@ const DriverStandings = () => {
       setValueForm(year, type, name);
     }
     if (type === 'teams') {
-      text = text as Team;
-      const name = text.name.toUpperCase();
-      nav(`/results/${season}/teams/${text.constructorId}`);
+      const name = (text as string).toUpperCase();
+      nav(`/results/${season}/teams/${name.toLowerCase()}`);
       setValueForm(year, type, name);
     }
   };
@@ -78,11 +70,10 @@ const DriverStandings = () => {
       title: 'TEAM',
       dataIndex: 'team',
       className: 'team',
-      render: (text: Team) => {
-        const name = text.name.toUpperCase();
+      render: (text: string) => {
         return (
-          <span key={text.constructorId} onClick={() => handleChange(text, 'teams')}>
-            {name}
+          <span key={text} onClick={() => handleChange(text, 'teams')}>
+            {text.toUpperCase()}
           </span>
         );
       }
@@ -105,7 +96,7 @@ const DriverStandings = () => {
           pos: item.position,
           driver: item.Driver,
           nationality: item.Driver.nationality,
-          team: item.Constructors[0],
+          team: item.Constructors[0].name,
           pts: item.points
         };
       }) ?? []

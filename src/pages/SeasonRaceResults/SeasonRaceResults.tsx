@@ -84,7 +84,6 @@ const SeasonRaceResults = () => {
       }) ?? []
     );
   }, [racesResultsQuery.data]);
-
   const loading = racesResultsQuery.isFetching || racesResultsQuery.isLoading;
   return (
     <div className='races-container'>

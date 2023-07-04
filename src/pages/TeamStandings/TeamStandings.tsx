@@ -1,4 +1,4 @@
-import { useTeams, useYear } from '@/modules';
+import { useTeams, useValueForm, useYear } from '@/modules';
 import '@/pages/TeamStandings/TeamStandings.scss';
 import type { ColumnsType } from 'antd/es/table';
 import Table from 'antd/es/table';
@@ -14,9 +14,17 @@ interface DataType {
 }
 
 const TeamStandings = () => {
-  const param = useParams();
-
+  const { season, teamStandingDetail } = useParams();
   const nav = useNavigate();
+  const { setValueForm } = useValueForm();
+
+  const handleChange = (text: string, type: string) => {
+    if (type === 'teams') {
+      const name = text.toUpperCase();
+      nav(`/results/${season}/teams/${name.toLowerCase()}`);
+      setValueForm(year, type, name);
+    }
+  };
 
   const columns: ColumnsType<DataType> = [
     {
@@ -27,10 +35,10 @@ const TeamStandings = () => {
       title: 'TEAM',
       dataIndex: 'team',
       className: 'team',
-      render: (text) => {
+      render: (text: string) => {
         return (
-          <span key={text} onClick={() => nav(`${text}`, { state: { name: text } })}>
-            {text}
+          <span key={text} onClick={() => handleChange(text, 'teams')}>
+            {text.toUpperCase()}
           </span>
         );
       }
@@ -50,17 +58,16 @@ const TeamStandings = () => {
       return {
         key: item.position,
         pos: item.position,
-        team: item.Constructor.name.toUpperCase(),
+        team: item.Constructor.name,
         pts: item.points
       };
     });
   }, [teamsQuery.data]);
-  console.log('data', data, teamsQuery.isFetching, teamsQuery.isLoading);
 
   const loading = teamsQuery.isFetching || teamsQuery.isLoading;
   return (
     <div className='teams-container'>
-      {param.teamStandingDetail ? (
+      {teamStandingDetail ? (
         <Outlet />
       ) : (
         <div className='teams-content'>
