@@ -32,11 +32,13 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "src/components",
+    "src/custom.d.ts"
   ],
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
-  ]
+  ],
 }

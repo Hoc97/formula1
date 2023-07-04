@@ -57,18 +57,19 @@ const TeamStandings = () => {
   }, [teamsQuery.data]);
   console.log('data', data, teamsQuery.isFetching, teamsQuery.isLoading);
 
+  const loading = teamsQuery.isFetching || teamsQuery.isLoading;
   return (
     <div className='teams-container'>
-      {param.teamDetail ? (
+      {param.teamStandingDetail ? (
         <Outlet />
       ) : (
         <div className='teams-content'>
           <h1>{year} Constructor Standings</h1>
           {data.length > 0 ? (
-            <Table loading={teamsQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+            <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
           ) : (
             <div>
-              {!teamsQuery.isFetching ? (
+              {!loading ? (
                 <>
                   The Constructors Championship was not awarded until <b>1958</b>
                 </>

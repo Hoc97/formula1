@@ -74,17 +74,15 @@ const Qualifying = () => {
       }) ?? []
     );
   }, [qualifyingQuery.data]);
+
+  const loading = qualifyingQuery.isFetching || qualifyingQuery.isLoading;
   return (
     <>
       {data.length > 0 ? (
-        <Table loading={qualifyingQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+        <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
       ) : (
         <Typography.Title level={3}>
-          {!qualifyingQuery.isFetching ? (
-            <>Qualifying results are only fully supported from the 2003 season onwards.</>
-          ) : (
-            <Spin />
-          )}
+          {!loading ? <>Qualifying results are only fully supported from the 2003 season onwards.</> : <Spin />}
         </Typography.Title>
       )}
     </>

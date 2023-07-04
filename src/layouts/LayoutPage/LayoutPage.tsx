@@ -13,6 +13,7 @@ const LayoutPage = () => {
           <Outlet />
         </div>
       </Content>
+      <hr style={{ margin: '10px 40px 0' }} />
       <Footer style={{ textAlign: 'center' }}>© Copyright 2023 By Thai Hoc. All Rights are Reserved.</Footer>
     </Layout>
   );

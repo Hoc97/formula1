@@ -10,52 +10,67 @@ const { Header } = Layout;
 
 const HeaderPage = () => {
   const { pathname } = useLocation();
-  const { season, raceDetail } = useParams();
+  const { season, raceDetail, driverStandingDetail } = useParams();
   const { valueForm, setValueForm } = useValueForm();
-  const { setCurrentTabMenu } = useTabMenu();
+  const { currentTabMenu, setCurrentTabMenu } = useTabMenu();
   const [current, setCurrent] = useState('');
   const [year] = useYear();
 
+
   useEffect(() => {
-    if (pathname === '/racing') {
-      document.title = `F1 Schedule ${year}`;
-      setCurrent('racing');
+    const lastParam = pathname.match(/[^/]+$/g)?.[0];
+    const typeResultParams = ['races', 'drivers', 'teams', 'fastest-laps-award'];
+    const title = {
+      home: 'F1 - Home',
+      racing: 'F1 Schedule',
+      results: 'F1 Results',
+      drivers: 'F1 Drivers',
+      teams: 'F1 Teams'
+    };
+
+    if (lastParam && (pathname === `/${lastParam}`)) {
+      setCurrent(lastParam);
+      document.title = `${title[lastParam]} ${year}`;
       return;
     }
-    if (pathname.includes('/results/') && season) {
-      document.title = `F1 Results ${season}`;
+    if (lastParam && pathname === `/drivers/${lastParam}`) {
+      setCurrent('drivers');
+      document.title = `${title.drivers} ${year}`;
+      return;
+    }
+    if (lastParam && pathname === `/teams/${lastParam}`) {
+      setCurrent('teams');
+      document.title = `${title.teams} ${year}`;
+      return;
+    }
+    if (season && pathname.includes(`/results/${season}`)) {
+      document.title = `${title.results} ${season}`;
       setCurrent('results');
+
       if (raceDetail && valueForm.responseKey !== raceDetail.toUpperCase()) {
         setValueForm(+season, 'races', raceDetail.toUpperCase());
         return;
       }
-      if (!current || year !== +season) {
-        if (pathname.includes('races')) setValueForm(+season, 'races', 'ALL');
-        if (pathname.includes('drivers')) setValueForm(+season, 'drivers', 'ALL');
-        if (pathname.includes('teams')) setValueForm(+season, 'teams', 'ALL');
-        if (pathname.includes('fastest-laps-award')) setValueForm(+season, 'fastest-laps-award', 'ALL');
+      if (driverStandingDetail && valueForm.responseKey !== driverStandingDetail.toUpperCase()) {
+        const nameDetailArray = `${driverStandingDetail},`.split('-');
+        const nameDetail = [...nameDetailArray.slice(1), ...nameDetailArray.slice(0, 1)].join(' ').toUpperCase();
+        setValueForm(+season, 'drivers', nameDetail);
         return;
       }
-      if (pathname === `/results/${season}/races`) {
-        setValueForm(+season, 'races', 'ALL');
+      if (
+        lastParam &&
+        ((typeResultParams.includes(lastParam) && (!current || year !== +season)) ||
+          pathname === `/results/${season}/${lastParam}`)
+      ) {
+        setValueForm(+season, lastParam, 'ALL');
         return;
       }
-      return;
-    }
-    if (pathname === '/drivers') {
-      document.title = `F1 Drivers ${year}`;
-      setCurrent('drivers');
-      return;
-    }
-    if (pathname === '/teams') {
-      document.title = `F1 Teams ${year}`;
-      setCurrent('teams');
       return;
     }
     setCurrent('');
-    document.title = 'F1 - Home';
+    document.title = title.home;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, season]);
+  }, [pathname, season, year]);
 
   const items: MenuProps['items'] = [
     {
@@ -80,16 +95,19 @@ const HeaderPage = () => {
     setCurrent(e.key);
     if (e.key === 'results') {
       setValueForm(year, 'races', 'ALL');
-      setTimeout(() => {
-        setCurrentTabMenu('race-result');
-      }, 300);
+      if (currentTabMenu !== 'race-result') {
+        setTimeout(() => {
+          setCurrentTabMenu('race-result');
+        }, 300);
+      }
     }
   };
+
   return (
     <Header className='layout-header-page'>
       <div className='logo'>
         <Link to='/'>
-          <img src={logo} alt='test' />
+          <img src={logo} alt='logo' />
         </Link>
       </div>
       <Menu theme='dark' onClick={handleChange} mode='horizontal' selectedKeys={[current]} items={items} />

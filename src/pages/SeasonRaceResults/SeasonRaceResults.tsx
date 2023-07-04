@@ -23,9 +23,11 @@ const SeasonRaceResults = () => {
   const nav = useNavigate();
   const { setValueForm } = useValueForm();
 
-  const handleChange = (text) => {
-    nav(`${text.toLowerCase()}/race-result`);
-    setValueForm(year, 'races', text.toUpperCase());
+  const handleChange = (text: string, type: string) => {
+    if (type === 'races') {
+      nav(`${text.toLowerCase()}/race-result`);
+      setValueForm(year, type, text.toUpperCase());
+    }
   };
   const columns: ColumnsType<DataType> = [
     {
@@ -34,7 +36,7 @@ const SeasonRaceResults = () => {
       className: 'grand_prix',
       render: (text) => {
         return (
-          <span key={text} onClick={() => handleChange(text)}>
+          <span key={text} onClick={() => handleChange(text, 'races')}>
             {text}
           </span>
         );
@@ -83,6 +85,7 @@ const SeasonRaceResults = () => {
     );
   }, [racesResultsQuery.data]);
 
+  const loading = racesResultsQuery.isFetching || racesResultsQuery.isLoading;
   return (
     <div className='races-container'>
       {raceDetail ? (
@@ -90,7 +93,7 @@ const SeasonRaceResults = () => {
       ) : (
         <div className='races-content'>
           <Typography.Title>{year} RACE RESULTS</Typography.Title>
-          <Table loading={racesResultsQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+          <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
         </div>
       )}
     </div>

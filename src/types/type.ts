@@ -31,6 +31,19 @@ type DriversQueryOptions = {
   xmlns: string;
 };
 
+type DriverInfoQueryOptions = {
+  DriverTable: {
+    driverId: string;
+    Drivers: any[];
+  };
+  limit: string;
+  offet: string;
+  series: string;
+  total: string;
+  url: string;
+  xmlns: string;
+};
+
 type TeamsQueryOptions = {
   StandingsTable: {
     season: string;
@@ -51,5 +64,6 @@ export type {
   DriversQueryOptions,
   TeamsQueryOptions,
   RaceResultsQueryOptions,
-  RaceResultQueryOptions
+  RaceResultQueryOptions,
+  DriverInfoQueryOptions
 };

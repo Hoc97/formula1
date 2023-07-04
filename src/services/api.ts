@@ -5,7 +5,8 @@ import {
   RacesQueryOptions,
   TeamsQueryOptions,
   RaceResultsQueryOptions,
-  RaceResultQueryOptions
+  RaceResultQueryOptions,
+  DriverInfoQueryOptions
 } from '@/types/type';
 
 const getListRaces = (season: string): Promise<RacesQueryOptions> => {
@@ -30,6 +31,18 @@ const getSprint = (season: string, round: string): Promise<RaceResultQueryOption
 
 const getListDrivers = (season: string): Promise<DriversQueryOptions> => {
   return axios.get(`${season}/driverStandings.json`);
+};
+
+const getDriverStatsById = (driverId: string): Promise<RacesQueryOptions> => {
+  return axios.get(`/drivers/${driverId}/results.json?limit=500`);
+};
+
+const getDriverInfoById = (driverId: string): Promise<DriverInfoQueryOptions> => {
+  return axios.get(`/drivers/${driverId}.json`);
+};
+
+const getDriverChampsById = (driverId: string): Promise<DriversQueryOptions> => {
+  return axios.get(`/drivers/${driverId}/driverStandings.json?limit=500`);
 };
 
 const getListTeams = (season: string): Promise<TeamsQueryOptions> => {
@@ -58,5 +71,8 @@ export {
   getListFastestLapTimes,
   getPitStopSummary,
   getQualifying,
-  getSprint
+  getSprint,
+  getDriverStatsById,
+  getDriverInfoById,
+  getDriverChampsById
 };

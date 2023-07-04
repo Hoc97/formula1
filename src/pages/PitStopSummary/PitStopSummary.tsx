@@ -89,14 +89,13 @@ const PitStopSummary = () => {
     });
   }, [pitStopSummaryQuery.data, dataInfoDriver]);
 
+  const loading = pitStopSummaryQuery.isFetching || pitStopSummaryQuery.isLoading;
   return (
     <>
       {data.length > 0 ? (
-        <Table loading={pitStopSummaryQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+        <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
       ) : (
-        <Typography.Title level={3}>
-          {!pitStopSummaryQuery.isFetching ? <>No pit stops results for this round</> : <Spin />}
-        </Typography.Title>
+        <Typography.Title level={3}>{!loading ? <>No pit stops results for this round</> : <Spin />}</Typography.Title>
       )}
     </>
   );
