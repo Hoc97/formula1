@@ -10,11 +10,12 @@ const { Header } = Layout;
 
 const HeaderPage = () => {
   const { pathname } = useLocation();
-  const { season, raceDetail, driverDetail } = useParams();
+  const { season, raceDetail, driverStandingDetail } = useParams();
   const { valueForm, setValueForm } = useValueForm();
   const { currentTabMenu, setCurrentTabMenu } = useTabMenu();
   const [current, setCurrent] = useState('');
   const [year] = useYear();
+
 
   useEffect(() => {
     const lastParam = pathname.match(/[^/]+$/g)?.[0];
@@ -26,9 +27,20 @@ const HeaderPage = () => {
       drivers: 'F1 Drivers',
       teams: 'F1 Teams'
     };
-    if (lastParam && pathname === `/${lastParam}`) {
+
+    if (lastParam && (pathname === `/${lastParam}`)) {
       setCurrent(lastParam);
       document.title = `${title[lastParam]} ${year}`;
+      return;
+    }
+    if (lastParam && pathname === `/drivers/${lastParam}`) {
+      setCurrent('drivers');
+      document.title = `${title.drivers} ${year}`;
+      return;
+    }
+    if (lastParam && pathname === `/teams/${lastParam}`) {
+      setCurrent('teams');
+      document.title = `${title.teams} ${year}`;
       return;
     }
     if (season && pathname.includes(`/results/${season}`)) {
@@ -39,8 +51,8 @@ const HeaderPage = () => {
         setValueForm(+season, 'races', raceDetail.toUpperCase());
         return;
       }
-      if (driverDetail && valueForm.responseKey !== driverDetail.toUpperCase()) {
-        const nameDetailArray = `${driverDetail},`.split('-');
+      if (driverStandingDetail && valueForm.responseKey !== driverStandingDetail.toUpperCase()) {
+        const nameDetailArray = `${driverStandingDetail},`.split('-');
         const nameDetail = [...nameDetailArray.slice(1), ...nameDetailArray.slice(0, 1)].join(' ').toUpperCase();
         setValueForm(+season, 'drivers', nameDetail);
         return;
@@ -58,7 +70,7 @@ const HeaderPage = () => {
     setCurrent('');
     document.title = title.home;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, season]);
+  }, [pathname, season, year]);
 
   const items: MenuProps['items'] = [
     {
@@ -95,7 +107,7 @@ const HeaderPage = () => {
     <Header className='layout-header-page'>
       <div className='logo'>
         <Link to='/'>
-          <img src={logo} alt='test' />
+          <img src={logo} alt='logo' />
         </Link>
       </div>
       <Menu theme='dark' onClick={handleChange} mode='horizontal' selectedKeys={[current]} items={items} />

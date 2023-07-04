@@ -53,6 +53,7 @@ const columns: ColumnsType<DataType> = [
 
 const RaceResult = () => {
   const { round } = useOutletContext<{ round: string | number }>();
+
   const [year] = useYear();
   const racesResultQuery = useRaceResult(year, round as string, { enabled: !!round });
 
@@ -79,7 +80,8 @@ const RaceResult = () => {
     );
   }, [racesResultQuery.data]);
 
-  return <Table loading={racesResultQuery.isFetching} columns={columns} dataSource={data} pagination={false} />;
+  const loading = racesResultQuery.isFetching || racesResultQuery.isLoading;
+  return <Table loading={loading} columns={columns} dataSource={data} pagination={false} />;
 };
 
 export default RaceResult;

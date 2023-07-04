@@ -51,6 +51,7 @@ const FastestLapsAward = () => {
     });
   }, [fastestLapTimesQuery.data]);
 
+  const loading = fastestLapTimesQuery.isFetching || fastestLapTimesQuery.isLoading;
   return (
     <div className='fastest-laps-award-container'>
       <div className='fastest-laps-award-content'>
@@ -75,10 +76,10 @@ const FastestLapsAward = () => {
           </p>
         </div>
         {data.length > 0 ? (
-          <Table loading={fastestLapTimesQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+          <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
         ) : (
           <div>
-            {!fastestLapTimesQuery.isFetching ? (
+            {!loading ? (
               <>
                 No data until <b>2004</b>
               </>

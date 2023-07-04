@@ -81,13 +81,14 @@ const Sprint = () => {
     );
   }, [sprintQuery.data]);
 
+  const loading = sprintQuery.isFetching || sprintQuery.isLoading;
   return (
     <>
       {data.length > 0 ? (
-        <Table loading={sprintQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+        <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
       ) : (
         <Typography.Title level={3}>
-          {!sprintQuery.isFetching ? <>No sprint qualifying results for this round</> : <Spin />}
+          {!loading ? <>No sprint qualifying results for this round</> : <Spin />}
         </Typography.Title>
       )}
     </>

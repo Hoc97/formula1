@@ -16,13 +16,13 @@ interface DataType {
   circuit: string;
 }
 
-function getItem(
+const getItem = (
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group'
-): MenuItem {
+): MenuItem => {
   return {
     label,
     key,
@@ -30,7 +30,7 @@ function getItem(
     children,
     type
   } as MenuItem;
-}
+};
 
 const RaceDetail = () => {
   const data = [
@@ -55,9 +55,7 @@ const RaceDetail = () => {
       key: 'sprint-result'
     }
   ];
-
   const dataMenu = data.map((item) => getItem(item.label, item.key));
-
   const items: MenuProps['items'] = [getItem(<b style={{ color: 'black' }}>RACE</b>, 'race', null, dataMenu, 'group')];
 
   const nav = useNavigate();
@@ -114,7 +112,6 @@ const RaceDetail = () => {
     return dataListInfo.findIndex((item) => item.raceName.toLowerCase().includes(raceDetail as string));
   }, [dataListInfo, raceDetail]);
   const dataInfo = dataListInfo[indexInfo];
-  // console.log('dataInfo', dataInfo, dataListInfo, racesQuery);
 
   const indexTab = data.findIndex((item) => item.key === currentTabMenu);
   return (

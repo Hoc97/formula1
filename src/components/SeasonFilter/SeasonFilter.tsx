@@ -26,25 +26,23 @@ const SeasonFilter = () => {
   }, []);
 
   return (
-    <>
-      <Form form={form} layout='vertical'>
-        <Col span={8}>
-          <Form.Item name='season' label='Season'>
-            <Select placeholder='Select season' onChange={handleChange}>
-              <>
-                {yearArray.map((item) => {
-                  return (
-                    <Option key={item} value={item}>
-                      {item}
-                    </Option>
-                  );
-                })}
-              </>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Form>
-    </>
+    <Form form={form} layout='vertical'>
+      <Col span={6}>
+        <Form.Item name='season' label='Season'>
+          <Select placeholder='Select season' onChange={handleChange}>
+            <>
+              {yearArray.map((item) => {
+                return (
+                  <Option key={item} value={item}>
+                    {item}
+                  </Option>
+                );
+              })}
+            </>
+          </Select>
+        </Form.Item>
+      </Col>
+    </Form>
   );
 };
 

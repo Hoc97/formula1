@@ -53,7 +53,6 @@ const columns: ColumnsType<DataType> = [
 ];
 
 const FastestLaps = () => {
-  // with first render is round = 0 (number)
   const { round } = useOutletContext<{ round: string | number }>();
   const [year] = useYear();
   const racesResultQuery = useRaceResult(year, round as string, { enabled: !!round });
@@ -81,13 +80,15 @@ const FastestLaps = () => {
 
     return data;
   }, [racesResultQuery.data]);
+
+  const loading = racesResultQuery.isFetching || racesResultQuery.isLoading;
   return (
     <>
       {data.length > 0 ? (
-        <Table loading={racesResultQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+        <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
       ) : (
         <Typography.Title level={3}>
-          {!racesResultQuery.isFetching ? <>No fastest laps results for this round</> : <Spin />}
+          {!loading ? <>No fastest laps results for this round</> : <Spin />}
         </Typography.Title>
       )}
     </>

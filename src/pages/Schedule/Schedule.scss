@@ -1,9 +1,16 @@
 .schedule-container {
   .schedule-content {
-    h1 {
-      font-size: 42px;
-      margin-bottom: 20px;
-      text-align: center;
+    .header {
+      position: relative;
+      h1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 42px;
+        height: 100%;
+        margin-top: 10px;
+      }
     }
 
     .schedule-table {
@@ -47,7 +54,6 @@
                 z-index: -1;
                 width: 200%;
                 height: 1000%;
-                // background: linear-gradient(#00ccff, #d400d4);
                 background: conic-gradient(red, #d400d4, yellow, green, #00ccff);
                 animation: animate 5s linear infinite forwards;
               }

@@ -11,3 +11,7 @@ export { default as useFastestLapAward } from './hooks/useFastestLapAward';
 export { default as useSprint } from './hooks/useSprint';
 export { default as usePitStopSummaryByRound } from './hooks/usePitStopSummaryByRound';
 export { default as useTabMenu } from './hooks/useTabMenu';
+export { default as useDriverStatsById } from './hooks/useDriverStatsById';
+export { default as useDriverInfoById } from './hooks/useDriverInfoById';
+export { default as useDriverChampsById } from './hooks/useDriverChampsById';
+

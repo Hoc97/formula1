@@ -240,15 +240,18 @@ const Schedule = () => {
     setExpandedRowKeys(newRowKeys);
   };
 
+  const loading = racesQuery.isFetching || racesQuery.isLoading;
   return (
     <div className='schedule-container'>
       <div className='schedule-content'>
-        <SeasonFilter />
-        <Typography.Title> F1 Schedule {year}</Typography.Title>
+        <div className='header'>
+          <SeasonFilter />
+          <Typography.Title> F1 Schedule {year}</Typography.Title>
+        </div>
         <div className='schedule-table'>
           <Table
             style={{ width: '80%' }}
-            loading={racesQuery.isFetching}
+            loading={loading}
             columns={columns}
             dataSource={data}
             pagination={false}

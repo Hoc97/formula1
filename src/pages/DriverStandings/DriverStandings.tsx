@@ -1,22 +1,57 @@
-import { useDriverStandings, useYear } from '@/modules';
+import { useDriverStandings, useValueForm, useYear } from '@/modules';
 import '@/pages/DriverStandings/DriverStandings.scss';
+import { Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Table from 'antd/es/table';
 import { useMemo } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
+interface Driver {
+  code: string;
+  dateOfBirth: string;
+  driverId: string;
+  familyName: string;
+  givenName: string;
+  nationality: string;
+  permanentNumber: string;
+  url: string;
+}
+
+interface Team {
+  constructorId: string;
+  name: string;
+  nationality: string;
+  url: string;
+}
+
 interface DataType {
   key: React.Key;
   pos: string;
-  driver: string;
+  driver: Driver;
   nationality: string;
-  team: string;
+  team: Team;
   pts: string;
 }
 
 const DriverStandings = () => {
-  const param = useParams();
+  const { season, driverStandingDetail } = useParams();
   const nav = useNavigate();
+  const { setValueForm } = useValueForm();
+
+  const handleChange = (text: Driver | Team, type: string) => {
+    if (type === 'drivers') {
+      text = text as Driver;
+      const name = `${text.familyName}, ${text.givenName}`.toUpperCase();
+      nav(`${text.givenName}-${text.familyName.replace(' ', '-')}`.toLowerCase().replace(' ', '-'));
+      setValueForm(year, type, name);
+    }
+    if (type === 'teams') {
+      text = text as Team;
+      const name = text.name.toUpperCase();
+      nav(`/results/${season}/teams/${text.constructorId}`);
+      setValueForm(year, type, name);
+    }
+  };
 
   const columns: ColumnsType<DataType> = [
     {
@@ -27,10 +62,10 @@ const DriverStandings = () => {
       title: 'DRIVER',
       dataIndex: 'driver',
       className: 'driver',
-      render: (text) => {
+      render: (text: Driver) => {
         return (
-          <span key={text} onClick={() => nav(`${text}`, { state: { name: text } })}>
-            {text}
+          <span key={text.driverId} onClick={() => handleChange(text, 'drivers')}>
+            {text.givenName} {text.familyName}
           </span>
         );
       }
@@ -43,10 +78,11 @@ const DriverStandings = () => {
       title: 'TEAM',
       dataIndex: 'team',
       className: 'team',
-      render: (text) => {
+      render: (text: Team) => {
+        const name = text.name.toUpperCase();
         return (
-          <span key={text} onClick={() => nav(`/results/${param.season}/teams/${text}`, { state: { name: text } })}>
-            {text}
+          <span key={text.constructorId} onClick={() => handleChange(text, 'teams')}>
+            {name}
           </span>
         );
       }
@@ -67,23 +103,24 @@ const DriverStandings = () => {
         return {
           key: item.position,
           pos: item.position,
-          driver: `${item.Driver.givenName} ${item.Driver.familyName}`,
+          driver: item.Driver,
           nationality: item.Driver.nationality,
-          team: item.Constructors[0].name.toUpperCase(),
+          team: item.Constructors[0],
           pts: item.points
         };
       }) ?? []
     );
   }, [driversQuery.data]);
 
+  const loading = driversQuery.isFetching || driversQuery.isLoading;
   return (
     <div className='driver-standings-container'>
-      {param.driverDetail ? (
+      {driverStandingDetail ? (
         <Outlet />
       ) : (
         <div className='driver-standings-content'>
-          <h1>{year} Driver Standings</h1>
-          <Table loading={driversQuery.isFetching} columns={columns} dataSource={data} pagination={false} />
+          <Typography.Title>{year} Driver Standings</Typography.Title>
+          <Table loading={loading} columns={columns} dataSource={data} pagination={false} />
         </div>
       )}
     </div>

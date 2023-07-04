@@ -110,7 +110,7 @@ const Search = () => {
     formRef.current?.submit();
   };
 
-  const onFinish = (values) => {
+  const onFinish = (values: { season: number; type: string; responseKey: string }) => {
     const { season, type, responseKey } = values;
     if (!responseKey) {
       setValueForm(season, type, 'ALL');
