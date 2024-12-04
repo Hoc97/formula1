@@ -1,24 +1,26 @@
-import axios from "axios";
+import axios from 'axios';
+import env from '@/configs/env';
 
-const baseUrl = import.meta.env.VITE_APP_BACKEND_URL;
 const instance = axios.create({
-    baseURL: baseUrl
+  baseURL: env.baseUrl
 });
 
-
-instance.interceptors.request.use(function (config) {
+instance.interceptors.request.use(
+  function (config) {
     return config;
-}, function (error) {
+  },
+  function (error) {
     return Promise.reject(error);
-});
+  }
+);
 
-
-instance.interceptors.response.use(function (response) {
-    // return response && response.data ? response.data : response;
-    return response;
-}, async function (error) {
-
+instance.interceptors.response.use(
+  function (response) {
+    return response?.data?.MRData ? response.data.MRData : response;
+  },
+  async function (error) {
     return error?.response ?? Promise.reject(error);
-});
+  }
+);
 
 export default instance;

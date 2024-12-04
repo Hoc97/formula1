@@ -21,6 +21,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
     "types": [
       "node"
     ],
@@ -31,11 +32,13 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "src/components",
+    "src/custom.d.ts"
   ],
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
-  ]
+  ],
 }

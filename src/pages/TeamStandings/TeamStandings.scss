@@ -1,0 +1,24 @@
+.team-standings-container {
+  .team-standings-content {
+    margin: 35px 15px 10px;
+
+    h1 {
+      font-weight: 500;
+      font-size: 42px;
+      margin-bottom: 48px;
+    }
+
+    table {
+      td {
+        &.team span {
+          font-weight: 600;
+          text-decoration: underline;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

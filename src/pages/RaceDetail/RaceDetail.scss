@@ -1,0 +1,30 @@
+.races-detail-container {
+  margin: 35px 15px 10px;
+
+  .header {
+    h1 {
+      font-weight: 500;
+      font-size: 42px;
+
+      &:nth-child(2) {
+        margin-bottom: 40px;
+      }
+    }
+
+    .date {
+      margin: 10px 0 20px;
+      display: flex;
+      gap: 10px;
+
+      span {
+        &:first-child {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+  :where(.css-dev-only-do-not-override-12jzuas).ant-menu-light .ant-menu-item-selected,
+  :where(.css-dev-only-do-not-override-12jzuas).ant-menu-light > .ant-menu .ant-menu-item-selected {
+    font-weight: 700;
+  }
+}
