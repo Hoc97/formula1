@@ -2,13 +2,13 @@ import { getDriverStatsById } from '@/services/api';
 import { useQuery } from '@tanstack/react-query';
 import { queryName } from '../queryName';
 
-const getKey = (name: string, year: string, driverId: string): string[] => [name, year, driverId];
+const getKey = (name: string, driverId: string): string[] => [name, driverId];
 
-const useDriverStatsById = (year: number, driverId: string, config: { enabled: boolean; } = { enabled: true }) => {
-  const queryKey = getKey(queryName.driverStatsById, year.toString(), driverId);
+const useDriverStatsById = (driverId: string, config: { enabled: boolean; } = { enabled: true }) => {
+  const queryKey = getKey(queryName.driverStatsById, driverId);
   return useQuery({
     queryKey,
-    queryFn: ({ queryKey }) => getDriverStatsById(queryKey[1], queryKey[2]),
+    queryFn: ({ queryKey }) => getDriverStatsById(queryKey[1]),
     keepPreviousData: true,
     staleTime: 5 * (60 * 1000),
     ...config

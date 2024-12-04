@@ -4,7 +4,7 @@ import { queryName } from '../queryName';
 
 const getKey = (name: string, params: string): string[] => [name, params];
 
-const useDriverStandings = (params: number, config: { enabled: boolean } = { enabled: true }) => {
+const useDriverStandings = (params: number, config: { enabled: boolean; } = { enabled: true }) => {
   const queryKey = getKey(queryName.listDrivers, params?.toString());
   return useQuery({
     queryKey,

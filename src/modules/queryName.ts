@@ -8,6 +8,7 @@ export const queryName = {
   rankingsRace: 'GetRankingsRace',
   listDrivers: 'GetListDrivers',
   driverStatsById: 'GetDriverStatsById',
+  teamDriversById: 'GetTeamDriversById',
   teamStatsById: 'GetTeamStatsById',
   driverInfoById: 'GetDriverInfoById',
   driverChampsByIdId: 'GetDriverChampsById',

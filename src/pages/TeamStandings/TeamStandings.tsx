@@ -66,11 +66,11 @@ const TeamStandings = () => {
 
   const loading = teamsQuery.isFetching || teamsQuery.isLoading;
   return (
-    <div className='teams-container'>
+    <div className='team-standings-container'>
       {teamStandingDetail ? (
         <Outlet />
       ) : (
-        <div className='teams-content'>
+        <div className='team-standings-content'>
           <h1>{year} Constructor Standings</h1>
           {data.length > 0 ? (
             <Table loading={loading} columns={columns} dataSource={data} pagination={false} />

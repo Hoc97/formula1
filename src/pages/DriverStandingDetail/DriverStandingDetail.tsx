@@ -1,4 +1,4 @@
-import { useDriverStandings, useDriverStatsById, useValueForm, useYear } from '@/modules';
+import { useDriverStandings, useDriverStatsByIdSeason, useValueForm, useYear } from '@/modules';
 import '@/pages/DriverStandingDetail/DriverStandingDetail.scss';
 import type { ColumnsType } from 'antd/es/table';
 import Table from 'antd/es/table';
@@ -110,7 +110,7 @@ const DriverStandingDetail = () => {
   }`;
   const driverId = dataDriver?.driver?.driverId;
 
-  const driverStatsQuery = useDriverStatsById(year, driverId, { enabled: !!driverId });
+  const driverStatsQuery = useDriverStatsByIdSeason(year, driverId, { enabled: !!driverId });
   const data: DataType[] = useMemo(() => {
     const dataDriverStats = (driverStatsQuery.data?.RaceTable?.Races as any[]) ?? [];
     return (

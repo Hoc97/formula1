@@ -1,4 +1,4 @@
-import { useTeamStatsById, useTeams, useValueForm, useYear } from '@/modules';
+import { useTeamStatsByIdSeason, useTeams, useValueForm, useYear } from '@/modules';
 import '@/pages/TeamStandingDetail/TeamStandingDetail.scss';
 import { Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -74,7 +74,7 @@ const TeamStandingDetail = () => {
   const nameTitle = dataTeam?.team?.name;
   const teamId = dataTeam?.team?.constructorId;
 
-  const teamStatsQuery = useTeamStatsById(year, teamId, { enabled: !!teamId });
+  const teamStatsQuery = useTeamStatsByIdSeason(year, teamId, { enabled: !!teamId });
   const data: DataType[] = useMemo(() => {
     const dataTeamStats = (teamStatsQuery.data?.RaceTable?.Races as any[]) ?? [];
     return (

@@ -1,9 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import LayoutPage from '@/layouts/LayoutPage/LayoutPage';
 
-const LayoutPage = lazy(() => import('@/layouts/LayoutPage/LayoutPage'));
-import Drivers from '@/pages/Drivers/Drivers'; //use Lazy will show down when switch tabs
+const Drivers = lazy(() => import('@/pages/Drivers/Drivers'));
+const Teams = lazy(() => import('@/pages/Teams/Teams'));
 const DriverInfo = lazy(() => import('@/pages/DriverInfo/DriverInfo'));
 const DriverStandingDetail = lazy(() => import('@/pages/DriverStandingDetail/DriverStandingDetail'));
 const DriverStandings = lazy(() => import('@/pages/DriverStandings/DriverStandings'));
@@ -20,7 +21,6 @@ const Schedule = lazy(() => import('@/pages/Schedule/Schedule'));
 const Result = lazy(() => import('@/pages/Result/Result'));
 const TeamStandingDetail = lazy(() => import('@/pages/TeamStandingDetail/TeamStandingDetail'));
 const TeamStandings = lazy(() => import('@/pages/TeamStandings/TeamStandings'));
-const Teams = lazy(() => import('@/pages/Teams/Teams'));
 const TeamInfo = lazy(() => import('@/pages/TeamInfo/TeamInfo'));
 const Home = lazy(() => import('@/pages/Home/Home'));
 

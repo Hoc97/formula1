@@ -94,7 +94,6 @@ const HeaderPage = () => {
   ];
 
   const handleChange: MenuProps['onClick'] = (e) => {
-    setCurrent(e.key);
     if (e.key === 'results') {
       setValueForm(year, 'races', 'ALL');
       if (currentTabMenu !== 'race-result') {

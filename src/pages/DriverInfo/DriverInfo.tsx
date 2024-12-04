@@ -1,18 +1,20 @@
 import f1 from '@/assets/f1/f1';
+import env from '@/configs/env';
 import { useDriverChampsById, useDriverInfoById, useDriverStatsById, useYear } from '@/modules';
 import '@/pages/DriverInfo/DriverInfo.scss';
-import { Typography, Spin } from 'antd';
+import { Spin, Typography } from 'antd';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import env from '@/configs/env';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { useParams } from 'react-router-dom';
 
+const { Link } = Typography;
 
 const DriverInfo = () => {
   const { driverinfo } = useParams();
   const [champs, setChamps] = useState<number>(0);
   const [stats, setStats] = useState<any[]>([]);
+  const [isPhoto, setIsPhoto] = useState(false);
   const [year] = useYear();
 
   const driverInfoQuery = useDriverInfoById(driverinfo as string);
@@ -20,10 +22,17 @@ const DriverInfo = () => {
   const driverStatsQuery = useDriverStatsById(driverinfo as string);
 
   useEffect(() => {
+    if (!isPhoto) {
+      setIsPhoto(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (driverChampsQuery.data) {
       const calculateDriverChamps = (seasons) => {
         let championships = 0;
-        seasons.forEach(season => {
+        seasons.forEach((season) => {
           const position = season.DriverStandings[0].position;
           if (position === '1') championships++;
         });
@@ -41,7 +50,7 @@ const DriverInfo = () => {
       const calculateDriverStats = (races) => {
         // [points, wins, podiums]
         const stats = [0, 0, 0];
-        races.forEach(race => {
+        races.forEach((race) => {
           const result = race.Results[0];
           //points
           stats[0] += Number(result.points);
@@ -63,37 +72,53 @@ const DriverInfo = () => {
   }, [driverStatsQuery.data]);
 
   const data = useMemo(() => {
-    const dataDriverInfo = (driverInfoQuery.data?.DriverTable?.Drivers[0]) ?? {};
+    const dataDriverInfo = driverInfoQuery.data?.DriverTable?.Drivers[0] ?? {};
+    console.log('dataDriverInfo', dataDriverInfo);
+
     return {
       dateOfBirth: moment(dataDriverInfo.dateOfBirth).format('DD/MM/YYYY'),
       nationality: dataDriverInfo.nationality,
       name: !dataDriverInfo.givenName ? '' : `${dataDriverInfo.givenName} ${dataDriverInfo.familyName}`,
       familyName: !dataDriverInfo.familyName ? '' : dataDriverInfo.familyName.toLowerCase(),
+      url: dataDriverInfo.url
     };
   }, [driverInfoQuery.data]);
 
   const handlePhoto = () => {
-    return `${env.photoDriverUrl}${year}Drivers/${data.familyName}.jpg`;
+    return `${env.photoMainUrl}drivers/${year}Drivers/${data.familyName}.jpg`;
   };
 
-  const loading = (driverInfoQuery.isFetching || driverInfoQuery.isLoading)
-    || (driverChampsQuery.isFetching || driverChampsQuery.isLoading)
-    || (driverStatsQuery.isFetching || driverStatsQuery.isLoading);
+  const onError = () => {
+    setIsPhoto(false);
+  };
+
+  const loading =
+    driverInfoQuery.isFetching ||
+    driverInfoQuery.isLoading ||
+    driverChampsQuery.isFetching ||
+    driverChampsQuery.isLoading ||
+    driverStatsQuery.isFetching ||
+    driverStatsQuery.isLoading;
   return (
     <div className='driver-info-container'>
       <div className='driver-info'>
         <div className='left'>
           <div className='driver'>
-            {data.familyName ? <img src={handlePhoto()} alt='driver' /> : <BsFillPersonFill />}
+            {isPhoto ? <img src={handlePhoto()} alt='driver' onError={onError} /> : <BsFillPersonFill />}
           </div>
+          <Link href={data.url} target='_blank'>
+            Wikipedia
+          </Link>
         </div>
         <div className='right'>
-          {!loading ?
+          {!loading ? (
             <>
               <div className='header'>
                 <div className='title'>
                   <span>{stats[5]}</span>
-                  <div className='country-flag '><img src={f1.nationality[data.nationality]} /></div>
+                  <div className='country-flag '>
+                    <img src={f1.nationality[data.nationality]} />
+                  </div>
                 </div>
                 <Typography.Title level={2}>{data.name}</Typography.Title>
               </div>
@@ -108,16 +133,17 @@ const DriverInfo = () => {
                 <span>{stats[0]}</span>
                 <Typography.Title level={3}>First Entry</Typography.Title>
                 <span>{stats[3]}</span>
-                <Typography.Title level={3}>World Championships	</Typography.Title>
+                <Typography.Title level={3}>World Championships </Typography.Title>
                 <span>{champs}</span>
                 <Typography.Title level={3}>Wins</Typography.Title>
                 <span>{stats[1]}</span>
                 <Typography.Title level={3}>Date of birth</Typography.Title>
                 <span>{data.dateOfBirth}</span>
               </div>
-            </> :
+            </>
+          ) : (
             <Spin />
-          }
+          )}
         </div>
       </div>
     </div>
